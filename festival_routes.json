@@ -1,0 +1,134 @@
+[
+  {
+    "festival_name": "Pongal",
+    "slug": "pongal",
+    "primary_states": ["Tamil Nadu"],
+    "destination_airports": ["MAA", "TRZ", "IXM"],
+    "source_airports": ["DEL", "BOM", "BLR", "HYD", "CCU"],
+    "recommended_routes": ["DEL-MAA", "BOM-MAA", "BLR-MAA", "HYD-MAA", "CCU-MAA"],
+    "surge_multiplier": 1.55,
+    "booking_window": "30-45 days",
+    "travel_reason": "Tamil harvest thanksgiving festival, traditional family reunions, and Jallikattu celebrations across Tamil Nadu."
+  },
+  {
+    "festival_name": "Durga Puja",
+    "slug": "durga-puja",
+    "primary_states": ["West Bengal"],
+    "destination_airports": ["CCU"],
+    "source_airports": ["DEL", "BOM", "BLR", "HYD", "AMD"],
+    "recommended_routes": ["DEL-CCU", "BOM-CCU", "BLR-CCU", "HYD-CCU", "AMD-CCU"],
+    "surge_multiplier": 1.86,
+    "booking_window": "30-50 days",
+    "travel_reason": "Bengal's grandest festival; massive homecoming diaspora for Pandal hopping, cultural carnivals, and autumnal reunions in Kolkata."
+  },
+  {
+    "festival_name": "Chhath Puja",
+    "slug": "chhath-puja",
+    "primary_states": ["Bihar", "Uttar Pradesh", "Jharkhand"],
+    "destination_airports": ["PAT", "VNS", "GAY", "IXR"],
+    "source_airports": ["DEL", "BOM", "BLR", "HYD", "CCU"],
+    "recommended_routes": ["DEL-PAT", "BOM-PAT", "BLR-PAT", "HYD-PAT", "CCU-PAT"],
+    "surge_multiplier": 2.30,
+    "booking_window": "45-60 days",
+    "travel_reason": "Sacred Vedic Sun worship homecoming across Bihar, Purvanchal, and Jharkhand; historical peak demand with complete airline seat sell-out."
+  },
+  {
+    "festival_name": "Holi",
+    "slug": "holi",
+    "primary_states": ["Delhi", "Uttar Pradesh", "Rajasthan"],
+    "destination_airports": ["DEL", "LKO", "VNS", "JAI"],
+    "source_airports": ["BOM", "BLR", "HYD", "CCU"],
+    "recommended_routes": ["BOM-DEL", "BLR-DEL", "HYD-LKO", "CCU-VNS"],
+    "surge_multiplier": 1.74,
+    "booking_window": "25-40 days",
+    "travel_reason": "Spring Festival of Colors driving massive northbound holiday and diaspora rush into Uttar Pradesh, Delhi-NCR, and Rajasthan."
+  },
+  {
+    "festival_name": "Makar Sankranti",
+    "slug": "makar-sankranti",
+    "primary_states": ["Gujarat", "Rajasthan"],
+    "destination_airports": ["AMD", "JAI"],
+    "source_airports": ["CCU", "DEL", "BOM"],
+    "recommended_routes": ["CCU-AMD", "DEL-AMD", "BOM-AMD"],
+    "surge_multiplier": 1.45,
+    "booking_window": "20-35 days",
+    "travel_reason": "International Kite Festival (Uttarayan) in Ahmedabad and heritage harvest festivities in Jaipur and Western India."
+  },
+  {
+    "festival_name": "Onam",
+    "slug": "onam",
+    "primary_states": ["Kerala"],
+    "destination_airports": ["COK", "TRV"],
+    "source_airports": ["DEL", "BOM", "BLR", "CCU"],
+    "recommended_routes": ["DEL-COK", "BOM-COK", "BLR-TRV", "CCU-COK"],
+    "surge_multiplier": 1.78,
+    "booking_window": "30-45 days",
+    "travel_reason": "Kerala's harvest homecoming celebration; major inward migration from Bangalore, Mumbai, Delhi, and GCC diaspora."
+  },
+  {
+    "festival_name": "Christmas",
+    "slug": "christmas",
+    "primary_states": ["Goa", "Kerala"],
+    "destination_airports": ["GOI", "COK"],
+    "source_airports": ["DEL", "BOM", "CCU", "MAA"],
+    "recommended_routes": ["DEL-GOI", "BOM-GOI", "CCU-GOI", "MAA-GOI"],
+    "surge_multiplier": 2.10,
+    "booking_window": "35-60 days",
+    "travel_reason": "Winter holiday celebrations, cathedral midnight masses, and coastal vacation rush into Goa and Kochi."
+  },
+  {
+    "festival_name": "Ram Navami",
+    "slug": "ram-navami",
+    "primary_states": ["Uttar Pradesh"],
+    "destination_airports": ["AYJ"],
+    "source_airports": ["DEL", "BOM", "CCU"],
+    "recommended_routes": ["DEL-AYJ", "BOM-AYJ", "CCU-AYJ"],
+    "surge_multiplier": 1.95,
+    "booking_window": "30-45 days",
+    "travel_reason": "Grand pilgrimage festival celebrating the birth of Lord Ram at Ayodhya Ram Janmabhoomi temple."
+  },
+  {
+    "festival_name": "Diwali",
+    "slug": "diwali",
+    "primary_states": ["Delhi", "Maharashtra", "Uttar Pradesh", "West Bengal", "Gujarat"],
+    "destination_airports": ["DEL", "LKO", "VNS", "PAT", "BOM", "JAI"],
+    "source_airports": ["BLR", "BOM", "HYD", "MAA", "DEL"],
+    "recommended_routes": ["BOM-DEL", "BLR-DEL", "DEL-LKO", "BOM-VNS", "BLR-PAT"],
+    "surge_multiplier": 2.15,
+    "booking_window": "35-55 days",
+    "travel_reason": "Pan-India festival of lights; single highest domestic travel peak of the year across all metro and regional corridors."
+  },
+  {
+    "festival_name": "Ganesh Chaturthi",
+    "slug": "ganesh-chaturthi",
+    "primary_states": ["Maharashtra"],
+    "destination_airports": ["BOM", "PNQ"],
+    "source_airports": ["DEL", "BLR", "HYD", "CCU"],
+    "recommended_routes": ["DEL-BOM", "BLR-BOM", "BLR-PNQ", "DEL-PNQ"],
+    "surge_multiplier": 1.65,
+    "booking_window": "25-40 days",
+    "travel_reason": "Sarvajanik Ganeshotsav pilgrimage and homecoming into Mumbai, Pune, and coastal Maharashtra."
+  },
+  {
+    "festival_name": "Eid-ul-Fitr",
+    "slug": "eid-ul-fitr",
+    "primary_states": ["Delhi", "Uttar Pradesh", "Telangana", "Jammu and Kashmir"],
+    "destination_airports": ["DEL", "LKO", "HYD", "SXR"],
+    "source_airports": ["BOM", "BLR", "CCU", "DEL"],
+    "recommended_routes": ["BOM-DEL", "BLR-HYD", "DEL-LKO", "DEL-SXR"],
+    "surge_multiplier": 1.72,
+    "booking_window": "25-40 days",
+    "travel_reason": "Culmination of Ramadan; family reunions and festive congregational celebrations across key cultural hubs."
+  },
+  {
+    "festival_name": "New Year Eve",
+    "slug": "new-year",
+    "primary_states": ["Goa", "Rajasthan"],
+    "destination_airports": ["GOI", "JAI"],
+    "source_airports": ["DEL", "BOM", "BLR", "HYD", "CCU"],
+    "recommended_routes": ["DEL-GOI", "BOM-GOI", "BLR-GOI", "HYD-GOI", "CCU-GOI"],
+    "surge_multiplier": 2.25,
+    "booking_window": "45-75 days",
+    "travel_reason": "Year-end coastal and heritage holiday celebrations, music festivals, and peak beach leisure tourism."
+  }
+]

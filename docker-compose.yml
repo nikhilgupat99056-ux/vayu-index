@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: vayu_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-vayu_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vayu_password}
+      POSTGRES_DB: ${POSTGRES_DB:-vayu_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - vayu_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vayu_user -d vayu_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    container_name: vayu_backend
+    restart: always
+    environment:
+      DATABASE_URL: postgresql://vayu_user:vayu_password@postgres:5432/vayu_db
+      APIX_RECALCULATE_INTERVAL_HOURS: 6
+      FARE_SCRAPE_INTERVAL_HOURS: 12
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+    container_name: vayu_frontend
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  vayu_pgdata:

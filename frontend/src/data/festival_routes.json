@@ -1,0 +1,304 @@
+[
+  {
+    "festival_name": "Maha Shivratri",
+    "slug": "maha-shivratri",
+    "primary_states": ["Uttar Pradesh", "Madhya Pradesh", "Uttarakhand", "Delhi"],
+    "destination_airports": ["VNS", "IDR", "DED", "DEL"],
+    "source_airports": ["CCU", "BOM", "DEL", "BLR", "HYD", "AMD", "MAA"],
+    "recommended_routes": [
+      "CCU→VNS", "BOM→VNS", "DEL→VNS", "BLR→VNS", "HYD→VNS", "AMD→VNS", "MAA→VNS",
+      "CCU→DED", "BOM→DED", "DEL→DED", "BLR→DED", "AMD→DED",
+      "DEL→IDR", "BOM→IDR", "BLR→IDR", "CCU→IDR", "HYD→IDR",
+      "BOM→DEL", "BLR→DEL"
+    ],
+    "surge_multiplier": 1.72,
+    "booking_window": "25-40 days",
+    "travel_reason": "Pan-India spiritual pilgrimage to Kashi Vishwanath (Varanasi), Mahakaleshwar Jyotirlinga (Ujjain via Indore), Rishikesh/Haridwar (Dehradun), and national capital prayer hubs.",
+    "category": "Pilgrimage"
+  },
+  {
+    "festival_name": "Rath Yatra Puri",
+    "slug": "rath-yatra",
+    "primary_states": ["Odisha"],
+    "destination_airports": ["BBI"],
+    "source_airports": ["CCU", "DEL", "BOM", "HYD", "BLR", "VTZ", "GAU", "RDP", "MAA", "AMD", "PAT", "IXR", "PNQ"],
+    "recommended_routes": [
+      "CCU→BBI", "DEL→BBI", "BOM→BBI", "HYD→BBI", "BLR→BBI", "VTZ→BBI",
+      "GAU→BBI", "RDP→BBI", "MAA→BBI", "AMD→BBI", "PAT→BBI", "IXR→BBI", "PNQ→BBI"
+    ],
+    "surge_multiplier": 1.85,
+    "booking_window": "30-50 days",
+    "travel_reason": "World-famous Jagannath Rath Yatra in Puri; massive devotional pilgrimage congregating via Bhubaneswar (BBI) airport with severe hotel and airline capacity crunch.",
+    "category": "Pilgrimage + Tourism"
+  },
+  {
+    "festival_name": "Independence Day Long Weekend",
+    "slug": "independence-day",
+    "primary_states": ["Pan-India Leisure", "Pan-India", "Goa", "Jammu and Kashmir", "Rajasthan", "Kerala", "Uttarakhand"],
+    "destination_airports": ["GOI", "SXR", "JAI", "COK", "TRV", "DED", "DEL", "BOM", "BLR", "CCU", "HYD", "MAA"],
+    "source_airports": ["DEL", "BOM", "BLR", "CCU", "HYD", "MAA"],
+    "recommended_routes": [
+      "DEL→GOI", "GOI→DEL", "BOM→GOI", "GOI→BOM", "BLR→GOI", "GOI→BLR", "CCU→GOI", "GOI→CCU",
+      "MAA→GOI", "GOI→MAA", "HYD→GOI", "GOI→HYD",
+      "DEL→SXR", "SXR→DEL", "BOM→SXR", "SXR→BOM", "BLR→SXR", "SXR→BLR",
+      "DEL→JAI", "JAI→DEL", "CCU→JAI", "JAI→CCU", "BOM→JAI", "JAI→BOM",
+      "DEL→COK", "COK→DEL", "HYD→COK", "COK→HYD", "BOM→COK", "COK→BOM",
+      "BLR→TRV", "TRV→BLR", "DEL→DED", "DED→DEL", "BOM→DED", "DED→BOM"
+    ],
+    "surge_multiplier": 1.70,
+    "booking_window": "21-35 days",
+    "travel_reason": "Pan-India leisure getaway surge to coastal Goa, scenic Kashmir, royal heritage Rajasthan, backwaters of Kerala, and Mussoorie/Dharamsala foothill retreats.",
+    "category": "Pan-India Leisure"
+  },
+  {
+    "festival_name": "Baisakhi & Vishu",
+    "slug": "baisakhi",
+    "primary_states": ["Punjab", "Chandigarh", "Kerala"],
+    "destination_airports": ["ATQ", "IXC", "COK", "TRV", "CCJ"],
+    "source_airports": ["DEL", "BOM", "CCU", "BLR", "HYD", "MAA"],
+    "recommended_routes": [
+      "DEL→ATQ", "BOM→ATQ", "CCU→ATQ", "BLR→ATQ", "HYD→ATQ",
+      "DEL→IXC", "BOM→IXC", "BLR→IXC", "CCU→IXC",
+      "CCU→COK", "BOM→COK", "BLR→COK", "DEL→COK", "HYD→COK",
+      "DEL→TRV", "BOM→TRV", "BLR→TRV", "HYD→TRV", "MAA→TRV",
+      "BLR→CCJ", "DEL→CCJ", "BOM→CCJ"
+    ],
+    "surge_multiplier": 1.62,
+    "booking_window": "20-35 days",
+    "travel_reason": "Dual harvest and astronomical New Year festivals: Baisakhi celebrations at Golden Temple Amritsar & Chandigarh, alongside Vishu family homecoming across Kerala (Kochi, Trivandrum, Calicut).",
+    "category": "Harvest + Cultural Homecoming"
+  },
+  {
+    "festival_name": "Pongal",
+    "slug": "pongal",
+    "primary_states": ["Tamil Nadu"],
+    "destination_airports": ["MAA", "TRZ", "IXM"],
+    "source_airports": ["DEL", "BOM", "BLR", "HYD", "CCU"],
+    "recommended_routes": ["DEL→MAA", "BOM→MAA", "BLR→MAA", "HYD→MAA", "CCU→MAA"],
+    "surge_multiplier": 1.55,
+    "booking_window": "30-45 days",
+    "travel_reason": "Tamil harvest thanksgiving festival, traditional family reunions, and Jallikattu celebrations across Tamil Nadu."
+  },
+  {
+    "festival_name": "Durga Puja",
+    "slug": "durga-puja",
+    "primary_states": ["West Bengal"],
+    "destination_airports": ["CCU"],
+    "source_airports": ["DEL", "BOM", "BLR", "HYD", "AMD"],
+    "recommended_routes": ["DEL→CCU", "BOM→CCU", "BLR→CCU", "HYD→CCU", "AMD→CCU"],
+    "surge_multiplier": 1.86,
+    "booking_window": "30-50 days",
+    "travel_reason": "Bengal's grandest festival; massive homecoming diaspora for Pandal hopping, cultural carnivals, and autumnal reunions in Kolkata."
+  },
+  {
+    "festival_name": "Chhath Puja",
+    "slug": "chhath-puja",
+    "primary_states": ["Bihar", "Uttar Pradesh", "Jharkhand"],
+    "destination_airports": ["PAT", "VNS", "GAY", "IXR"],
+    "source_airports": ["DEL", "BOM", "BLR", "HYD", "CCU"],
+    "recommended_routes": ["DEL→PAT", "BOM→PAT", "BLR→PAT", "HYD→PAT", "CCU→PAT"],
+    "surge_multiplier": 2.30,
+    "booking_window": "45-60 days",
+    "travel_reason": "Sacred Vedic Sun worship homecoming across Bihar, Purvanchal, and Jharkhand; historical peak demand with complete airline seat sell-out."
+  },
+  {
+    "festival_name": "Holi",
+    "slug": "holi",
+    "primary_states": ["Delhi", "Uttar Pradesh", "Rajasthan"],
+    "destination_airports": ["DEL", "LKO", "VNS", "JAI"],
+    "source_airports": ["BOM", "BLR", "HYD", "CCU"],
+    "recommended_routes": ["BOM→DEL", "BLR→DEL", "HYD→LKO", "CCU→VNS"],
+    "surge_multiplier": 1.74,
+    "booking_window": "25-40 days",
+    "travel_reason": "Spring Festival of Colors driving massive northbound holiday and diaspora rush into Uttar Pradesh, Delhi-NCR, and Rajasthan."
+  },
+  {
+    "festival_name": "Makar Sankranti",
+    "slug": "makar-sankranti",
+    "primary_states": ["Gujarat", "Rajasthan"],
+    "destination_airports": ["AMD", "JAI"],
+    "source_airports": ["CCU", "DEL", "BOM"],
+    "recommended_routes": ["CCU→AMD", "DEL→AMD", "BOM→AMD"],
+    "surge_multiplier": 1.45,
+    "booking_window": "20-35 days",
+    "travel_reason": "International Kite Festival (Uttarayan) in Ahmedabad and heritage harvest festivities in Jaipur and Western India."
+  },
+  {
+    "festival_name": "Onam",
+    "slug": "onam",
+    "primary_states": ["Kerala"],
+    "destination_airports": ["COK", "TRV"],
+    "source_airports": ["DEL", "BOM", "BLR", "CCU"],
+    "recommended_routes": ["DEL→COK", "BOM→COK", "BLR→TRV", "CCU→COK"],
+    "surge_multiplier": 1.78,
+    "booking_window": "30-45 days",
+    "travel_reason": "Kerala's harvest homecoming celebration; major inward migration from Bangalore, Mumbai, Delhi, and GCC diaspora."
+  },
+  {
+    "festival_name": "Christmas",
+    "slug": "christmas",
+    "primary_states": ["Goa", "Kerala"],
+    "destination_airports": ["GOI", "COK"],
+    "source_airports": ["DEL", "BOM", "CCU", "MAA"],
+    "recommended_routes": ["DEL→GOI", "BOM→GOI", "CCU→GOI", "MAA→GOI"],
+    "surge_multiplier": 2.10,
+    "booking_window": "35-60 days",
+    "travel_reason": "Winter holiday celebrations, cathedral midnight masses, and coastal vacation rush into Goa and Kochi."
+  },
+  {
+    "festival_name": "Ram Navami",
+    "slug": "ram-navami",
+    "primary_states": ["Uttar Pradesh"],
+    "destination_airports": ["AYJ"],
+    "source_airports": ["DEL", "BOM", "CCU"],
+    "recommended_routes": ["DEL→AYJ", "BOM→AYJ", "CCU→AYJ"],
+    "surge_multiplier": 1.95,
+    "booking_window": "30-45 days",
+    "travel_reason": "Grand pilgrimage festival celebrating the birth of Lord Ram at Ayodhya Ram Janmabhoomi temple."
+  },
+  {
+    "festival_name": "Diwali",
+    "slug": "diwali",
+    "primary_states": ["Delhi", "Maharashtra", "Uttar Pradesh", "West Bengal", "Gujarat"],
+    "destination_airports": ["DEL", "LKO", "VNS", "PAT", "BOM", "JAI"],
+    "source_airports": ["BLR", "BOM", "HYD", "MAA", "DEL"],
+    "recommended_routes": ["BOM→DEL", "BLR→DEL", "DEL→LKO", "BOM→VNS", "BLR→PAT"],
+    "surge_multiplier": 2.15,
+    "booking_window": "35-55 days",
+    "travel_reason": "Pan-India festival of lights; single highest domestic travel peak of the year across all metro and regional corridors."
+  },
+  {
+    "festival_name": "Ganesh Chaturthi",
+    "slug": "ganesh-chaturthi",
+    "primary_states": ["Maharashtra"],
+    "destination_airports": ["BOM", "PNQ"],
+    "source_airports": ["DEL", "BLR", "HYD", "CCU"],
+    "recommended_routes": ["DEL→BOM", "BLR→BOM", "BLR→PNQ", "DEL→PNQ"],
+    "surge_multiplier": 1.65,
+    "booking_window": "25-40 days",
+    "travel_reason": "Sarvajanik Ganeshotsav pilgrimage and homecoming into Mumbai, Pune, and coastal Maharashtra."
+  },
+  {
+    "festival_name": "Eid-ul-Fitr",
+    "slug": "eid-ul-fitr",
+    "primary_states": ["Delhi", "Uttar Pradesh", "Telangana", "Jammu and Kashmir"],
+    "destination_airports": ["DEL", "LKO", "HYD", "SXR"],
+    "source_airports": ["BOM", "BLR", "CCU", "DEL"],
+    "recommended_routes": ["BOM→DEL", "BLR→HYD", "DEL→LKO", "DEL→SXR"],
+    "surge_multiplier": 1.72,
+    "booking_window": "25-40 days",
+    "travel_reason": "Culmination of Ramadan; family reunions and festive congregational celebrations across key cultural hubs."
+  },
+  {
+    "festival_name": "New Year Eve",
+    "slug": "new-year",
+    "primary_states": ["Goa", "Rajasthan"],
+    "destination_airports": ["GOI", "JAI"],
+    "source_airports": ["DEL", "BOM", "BLR", "HYD", "CCU"],
+    "recommended_routes": ["DEL→GOI", "BOM→GOI", "BLR→GOI", "HYD→GOI", "CCU→GOI"],
+    "surge_multiplier": 2.25,
+    "booking_window": "45-75 days",
+    "travel_reason": "Year-end coastal and heritage holiday celebrations, music festivals, and peak beach leisure tourism."
+  },
+  {
+    "festival_name": "Republic Day Extended Weekend",
+    "slug": "republic-day",
+    "primary_states": ["Goa", "Uttarakhand", "Rajasthan", "Jammu and Kashmir"],
+    "destination_airports": ["GOI", "DED", "JAI", "SXR"],
+    "source_airports": ["DEL", "BOM", "BLR"],
+    "recommended_routes": [
+      "DEL→GOI", "BOM→GOI", "BLR→GOI",
+      "DEL→DED", "BOM→DED",
+      "DEL→JAI", "BOM→JAI",
+      "DEL→SXR", "BOM→SXR"
+    ],
+    "surge_multiplier": 1.50,
+    "booking_window": "20-35 days",
+    "travel_reason": "Winter long weekend leisure tourism to Goa beaches, Mussoorie snowscapes, Jaipur palaces, and Gulmarg ski slopes."
+  },
+  {
+    "festival_name": "Raksha Bandhan",
+    "slug": "raksha-bandhan",
+    "primary_states": ["Delhi", "Uttar Pradesh", "Maharashtra", "Gujarat"],
+    "destination_airports": ["DEL", "LKO", "BOM", "AMD"],
+    "source_airports": ["BOM", "BLR", "DEL", "CCU"],
+    "recommended_routes": [
+      "BOM→DEL", "BLR→DEL", "DEL→LKO", "BOM→LKO",
+      "DEL→BOM", "BLR→BOM", "DEL→AMD", "BOM→AMD"
+    ],
+    "surge_multiplier": 1.48,
+    "booking_window": "15-30 days",
+    "travel_reason": "Intense short-lead interstate sibling homecoming and family reunions connecting major commercial metros."
+  },
+  {
+    "festival_name": "Janmashtami",
+    "slug": "janmashtami",
+    "primary_states": ["Uttar Pradesh", "Gujarat", "Maharashtra"],
+    "destination_airports": ["DEL", "AMD", "BOM"],
+    "source_airports": ["BOM", "BLR", "CCU", "DEL"],
+    "recommended_routes": [
+      "BOM→DEL", "BLR→DEL", "CCU→DEL",
+      "DEL→AMD", "BOM→AMD",
+      "BLR→BOM", "DEL→BOM"
+    ],
+    "surge_multiplier": 1.52,
+    "booking_window": "20-35 days",
+    "travel_reason": "Pilgrimage to Mathura-Vrindavan (via Delhi), Dwarka (via Ahmedabad), and Dahi Handi festivities across Mumbai-Thane."
+  },
+  {
+    "festival_name": "Gandhi Jayanti Weekend",
+    "slug": "gandhi-jayanti",
+    "primary_states": ["Goa", "Kerala", "Rajasthan"],
+    "destination_airports": ["GOI", "COK", "JAI"],
+    "source_airports": ["DEL", "BOM", "BLR", "HYD"],
+    "recommended_routes": [
+      "DEL→GOI", "BOM→GOI", "BLR→GOI", "HYD→GOI",
+      "DEL→COK", "BOM→COK", "DEL→JAI", "BOM→JAI"
+    ],
+    "surge_multiplier": 1.55,
+    "booking_window": "20-35 days",
+    "travel_reason": "Autumn long-weekend national leisure traffic heading to coastal resorts, Rajasthan heritage hotels, and Kerala backwaters."
+  },
+  {
+    "festival_name": "Dussehra (Vijayadashami)",
+    "slug": "dussehra",
+    "primary_states": ["Karnataka", "Delhi", "West Bengal", "Uttarakhand"],
+    "destination_airports": ["BLR", "DEL", "CCU", "DED"],
+    "source_airports": ["DEL", "BOM", "HYD", "MAA", "BLR"],
+    "recommended_routes": [
+      "DEL→BLR", "BOM→BLR", "HYD→BLR", "MAA→BLR",
+      "BOM→DEL", "BLR→DEL", "DEL→CCU", "BOM→CCU", "DEL→DED"
+    ],
+    "surge_multiplier": 1.68,
+    "booking_window": "25-40 days",
+    "travel_reason": "Mysuru Dasara cultural spectacles (via Bengaluru), Ramlila festivities in Delhi, and festive autumn holiday travel."
+  },
+  {
+    "festival_name": "Govardhan Puja & Bhai Dooj",
+    "slug": "bhai-dooj",
+    "primary_states": ["Uttar Pradesh", "Delhi", "Bihar", "Gujarat"],
+    "destination_airports": ["LKO", "VNS", "DEL", "PAT", "AMD"],
+    "source_airports": ["DEL", "BOM", "BLR"],
+    "recommended_routes": [
+      "DEL→LKO", "BOM→LKO", "DEL→VNS", "BOM→VNS",
+      "BOM→DEL", "BLR→DEL", "DEL→PAT", "BOM→PAT", "BOM→AMD"
+    ],
+    "surge_multiplier": 1.70,
+    "booking_window": "25-40 days",
+    "travel_reason": "Post-Diwali sibling homecoming and pilgrimage reunions spanning Uttar Pradesh, Bihar, and Western India."
+  },
+  {
+    "festival_name": "Guru Nanak Jayanti",
+    "slug": "guru-nanak-jayanti",
+    "primary_states": ["Punjab", "Chandigarh", "Delhi"],
+    "destination_airports": ["ATQ", "IXC", "DEL"],
+    "source_airports": ["DEL", "BOM", "BLR", "CCU"],
+    "recommended_routes": [
+      "DEL→ATQ", "BOM→ATQ", "BLR→ATQ", "CCU→ATQ",
+      "DEL→IXC", "BOM→IXC", "BOM→DEL", "BLR→DEL"
+    ],
+    "surge_multiplier": 1.65,
+    "booking_window": "20-35 days",
+    "travel_reason": "Gurpurab sacred devotional congregation and Prakash Parv at the Golden Temple, Amritsar, and historical Gurdwaras across Punjab and Delhi."
+  }
+]

@@ -1,0 +1,31 @@
+# Dockerfile for VAYU-Index Backend
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy source code
+COPY backend/ ./backend/
+COPY scraper/ ./scraper/
+COPY analytics/ ./analytics/
+COPY data/ ./data/
+
+# Environment defaults
+ENV PYTHONUNBUFFERED=1 \
+    DATABASE_URL="postgresql://vayu_user:vayu_password@postgres:5432/vayu_db" \
+    PORT=8000
+
+EXPOSE 8000
+
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
