@@ -13,12 +13,15 @@ import FareSaverPage from './pages/FareSaverPage';
 import AirlinesPage from './pages/AirlinesPage';
 import SettingsPage from './pages/SettingsPage';
 
+import { ThemeProvider } from './context/ThemeContext';
+
 export default function App() {
   return (
-    <Router>
-      <div className="min-h-screen bg-[#020817] text-slate-100 flex flex-col font-sans selection:bg-sky-500/20 selection:text-white">
-        {/* Persistent Bloomberg x FlightRadar24 Style Header */}
-        <Navbar />
+    <ThemeProvider>
+      <Router>
+        <div className="min-h-screen bg-slate-50 dark:bg-[#020817] text-slate-900 dark:text-slate-100 flex flex-col font-sans selection:bg-sky-500/20 selection:text-white transition-colors duration-200">
+          {/* Persistent Bloomberg x FlightRadar24 Style Header */}
+          <Navbar />
 
         {/* Dynamic Page Router */}
         <main className="flex-1 w-full">
@@ -40,5 +43,6 @@ export default function App() {
         <Footer />
       </div>
     </Router>
+  </ThemeProvider>
   );
 }

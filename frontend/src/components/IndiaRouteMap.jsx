@@ -306,26 +306,26 @@ export default function IndiaRouteMap({
   };
 
   return (
-    <div className="relative w-full rounded-xl overflow-hidden border border-slate-800 bg-[#090e1a] shadow-sm">
+    <div className="relative w-full rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-[#090e1a] shadow-sm transition-colors">
       
       {/* Top Map Controls Overlay */}
       {interactive && (
         <div className="absolute top-3 left-3 right-3 z-[1000] flex flex-wrap items-center justify-between gap-2 pointer-events-none">
           
           {/* Airport Search Bar */}
-          <div className="pointer-events-auto flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs w-full sm:w-72 shadow-sm">
+          <div className="pointer-events-auto flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/95 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs w-full sm:w-72 shadow-sm backdrop-blur-sm transition-colors">
             <Search className="w-3.5 h-3.5 text-slate-400 shrink-0" />
             <input
               type="text"
               placeholder="Search airports or corridors..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-transparent text-slate-100 placeholder-slate-500 focus:outline-none w-full text-xs font-medium"
+              className="bg-transparent text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none w-full text-xs font-medium"
             />
             {searchQuery && (
               <button 
                 onClick={() => setSearchQuery('')}
-                className="text-slate-400 hover:text-white text-xs font-bold"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-white text-xs font-bold"
               >
                 ✕
               </button>
@@ -333,15 +333,15 @@ export default function IndiaRouteMap({
           </div>
 
           {/* Route Category Pills */}
-          <div className="pointer-events-auto flex items-center gap-1 overflow-x-auto p-1 rounded-lg bg-slate-900 border border-slate-800 shadow-sm">
+          <div className="pointer-events-auto flex items-center gap-1 overflow-x-auto p-1 rounded-lg bg-white/95 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm backdrop-blur-sm transition-colors">
             {['ALL', 'Metro', 'Business', 'Tourism', 'Pilgrimage', 'North-East'].map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className={`px-2.5 py-1 rounded text-xs font-medium transition-colors whitespace-nowrap ${
                   activeCategory === cat
-                    ? 'bg-slate-800 text-sky-400 border border-slate-700'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                    ? 'bg-sky-50 dark:bg-slate-800 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-slate-700'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50'
                 }`}
               >
                 {cat}
@@ -353,7 +353,7 @@ export default function IndiaRouteMap({
           {(selectedAirport || searchQuery || activeCategory !== 'ALL') && (
             <button
               onClick={handleResetView}
-              className="pointer-events-auto flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-medium shadow-sm transition-colors"
+              className="pointer-events-auto flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-medium shadow-sm transition-colors"
             >
               <RotateCcw className="w-3 h-3" />
               <span>Reset</span>
@@ -436,56 +436,56 @@ export default function IndiaRouteMap({
                 }}
               >
                 <Popup>
-                  <div className="p-3 text-slate-100 text-xs min-w-[220px] space-y-2 bg-slate-900 rounded-lg border border-slate-800 shadow-lg">
+                  <div className="p-3 text-slate-900 dark:text-slate-100 text-xs min-w-[220px] space-y-2 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 shadow-lg">
                     
-                    <div className="flex items-center justify-between border-b border-slate-800 pb-1.5">
-                      <div className="flex items-center gap-1.5 font-bold text-xs text-sky-400 font-mono">
+                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-1.5">
+                      <div className="flex items-center gap-1.5 font-bold text-xs text-sky-600 dark:text-sky-400 font-mono">
                         <span>{route.origin_iata}</span>
-                        <span className="text-slate-500">➔</span>
+                        <span className="text-slate-400 dark:text-slate-500">➔</span>
                         <span>{route.destination_iata}</span>
                       </div>
-                      <span className="px-1.5 py-0.5 rounded text-[10px] uppercase font-semibold bg-slate-800 text-slate-300 border border-slate-700">
+                      <span className="px-1.5 py-0.5 rounded text-[10px] uppercase font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                         {route.category}
                       </span>
                     </div>
 
-                    <div className="text-[11px] text-slate-300">
+                    <div className="text-[11px] text-slate-700 dark:text-slate-300">
                       <span>{originCity}</span>
-                      <span className="text-slate-500 mx-1">to</span>
+                      <span className="text-slate-400 dark:text-slate-500 mx-1">to</span>
                       <span>{destCity}</span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-1.5 text-xs font-mono bg-slate-950 p-2 rounded border border-slate-800">
+                    <div className="grid grid-cols-2 gap-1.5 text-xs font-mono bg-slate-50 dark:bg-slate-950 p-2 rounded border border-slate-200 dark:border-slate-800">
                       <div>
-                        <span className="text-slate-500 text-[10px] block">Avg Fare:</span>
-                        <span className="text-emerald-400 font-bold text-xs">
+                        <span className="text-slate-500 dark:text-slate-400 text-[10px] block">Avg Fare:</span>
+                        <span className="text-emerald-600 dark:text-emerald-400 font-bold text-xs">
                           {formatCurrencyINR(route.current_avg_fare || route.avg_fare, '₹4,850')}
                         </span>
                       </div>
                       <div>
-                        <span className="text-slate-500 text-[10px] block">APIx:</span>
+                        <span className="text-slate-500 dark:text-slate-400 text-[10px] block">APIx:</span>
                         <span className="font-bold text-xs" style={{ color: isSelected ? '#06B6D4' : tierInfo.color }}>
                           {formatAPIx(route.current_apix || route.apix, '112.40')}
                         </span>
                       </div>
                       <div>
-                        <span className="text-slate-500 text-[10px] block">Distance:</span>
-                        <span className="text-slate-300">{route.distance_km} km</span>
+                        <span className="text-slate-500 dark:text-slate-400 text-[10px] block">Distance:</span>
+                        <span className="text-slate-700 dark:text-slate-300">{route.distance_km} km</span>
                       </div>
                       <div>
-                        <span className="text-slate-500 text-[10px] block">Flight Time:</span>
-                        <span className="text-slate-300">{route.flight_time_mins} min</span>
+                        <span className="text-slate-500 dark:text-slate-400 text-[10px] block">Flight Time:</span>
+                        <span className="text-slate-700 dark:text-slate-300">{route.flight_time_mins} min</span>
                       </div>
                     </div>
 
-                    <div className="space-y-0.5 text-[10px] font-mono text-slate-400">
+                    <div className="space-y-0.5 text-[10px] font-mono text-slate-500 dark:text-slate-400">
                       <div className="flex justify-between">
                         <span>Cheapest Window:</span>
-                        <span className="text-sky-300 font-medium">{cheapestWindow}</span>
+                        <span className="text-sky-700 dark:text-sky-300 font-medium">{cheapestWindow}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Airlines:</span>
-                        <span className="text-slate-200">{airlinesList}</span>
+                        <span className="text-slate-800 dark:text-slate-200">{airlinesList}</span>
                       </div>
                     </div>
 
@@ -527,54 +527,54 @@ export default function IndiaRouteMap({
                 </Tooltip>
 
                 <Popup>
-                  <div className="p-3 text-slate-100 text-xs min-w-[220px] space-y-2 bg-slate-900 rounded-lg border border-slate-800 shadow-lg">
+                  <div className="p-3 text-slate-900 dark:text-slate-100 text-xs min-w-[220px] space-y-2 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 shadow-lg">
                     
-                    <div className="border-b border-slate-800 pb-1.5">
+                    <div className="border-b border-slate-200 dark:border-slate-800 pb-1.5">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1 font-mono">
-                          <span className="font-bold text-sm text-sky-400">{airport.iata}</span>
-                          <span className="text-slate-300 text-xs">&bull; {airport.city}</span>
+                          <span className="font-bold text-sm text-sky-600 dark:text-sky-400">{airport.iata}</span>
+                          <span className="text-slate-700 dark:text-slate-300 text-xs">&bull; {airport.city}</span>
                         </div>
                         {highlightedDestinations.includes(airport.iata) ? (
-                          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30">
                             🔥 Festival Hub
                           </span>
                         ) : (
                           <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${
-                            airport.is_metro ? 'bg-slate-800 text-sky-400 border border-slate-700' : 'bg-slate-800 text-slate-300'
+                            airport.is_metro ? 'bg-sky-50 dark:bg-slate-800 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-slate-700' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
                           }`}>
                             {airport.is_metro ? 'Metro Hub' : 'Regional'}
                           </span>
                         )}
                       </div>
-                      <span className="text-[10px] text-slate-400 block mt-0.5 truncate">
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5 truncate">
                         {airport.name}
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-1.5 text-[10px] font-mono bg-slate-950 p-2 rounded border border-slate-800">
+                    <div className="grid grid-cols-2 gap-1.5 text-[10px] font-mono bg-slate-50 dark:bg-slate-950 p-2 rounded border border-slate-200 dark:border-slate-800">
                       <div>
-                        <span className="text-slate-500 block">State:</span>
-                        <span className="text-slate-200">{airport.state}</span>
+                        <span className="text-slate-500 dark:text-slate-400 block">State:</span>
+                        <span className="text-slate-800 dark:text-slate-200">{airport.state}</span>
                       </div>
                       <div>
-                        <span className="text-slate-500 block">Region:</span>
-                        <span className="text-slate-200">{airport.region}</span>
+                        <span className="text-slate-500 dark:text-slate-400 block">Region:</span>
+                        <span className="text-slate-800 dark:text-slate-200">{airport.region}</span>
                       </div>
                       <div>
-                        <span className="text-slate-500 block">Outbound:</span>
-                        <span className="text-sky-400 font-bold">{outboundCount} Corridors</span>
+                        <span className="text-slate-500 dark:text-slate-400 block">Outbound:</span>
+                        <span className="text-sky-600 dark:text-sky-400 font-bold">{outboundCount} Corridors</span>
                       </div>
                       <div>
-                        <span className="text-slate-500 block">Inbound:</span>
-                        <span className="text-emerald-400 font-bold">{inboundCount} Corridors</span>
+                        <span className="text-slate-500 dark:text-slate-400 block">Inbound:</span>
+                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">{inboundCount} Corridors</span>
                       </div>
                     </div>
 
                     <div className="pt-1">
                       <button
                         onClick={() => handleAirportSelect(airport)}
-                        className="w-full py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 text-sky-400 font-medium text-xs transition-colors border border-slate-700 flex items-center justify-center gap-1.5"
+                        className="w-full py-1.5 rounded-md bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-sky-600 dark:text-sky-400 font-medium text-xs transition-colors border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-1.5"
                       >
                         <Compass className="w-3 h-3" />
                         <span>Filter Corridors from {airport.iata}</span>
@@ -590,13 +590,13 @@ export default function IndiaRouteMap({
       </div>
 
       {/* Dynamic Map Legend & Intensity Scale Overlay */}
-      <div className="absolute bottom-3 right-3 z-[1000] p-3 rounded-xl bg-slate-900/95 border border-slate-800 text-[11px] text-slate-300 shadow-xl space-y-2 pointer-events-auto min-w-[220px] backdrop-blur-md">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-1.5">
-          <span className="font-bold text-slate-200 flex items-center gap-1.5 text-xs">
-            <Layers className="w-3.5 h-3.5 text-sky-400" />
+      <div className="absolute bottom-3 right-3 z-[1000] p-3 rounded-xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-700 dark:text-slate-300 shadow-xl space-y-2 pointer-events-auto min-w-[220px] backdrop-blur-md transition-colors">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-1.5">
+          <span className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5 text-xs">
+            <Layers className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
             Tariff Heatmap Legend
           </span>
-          <span className="text-[10px] text-sky-400 font-mono font-semibold px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700">
+          <span className="text-[10px] text-sky-600 dark:text-sky-400 font-mono font-semibold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
             {activeCategory}
           </span>
         </div>
@@ -604,31 +604,31 @@ export default function IndiaRouteMap({
         <div className="space-y-1.5 font-mono text-[11px]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-emerald-500/20"></span>
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-emerald-500/20"></span>
               <span>Bargain Window</span>
             </div>
             <div className="text-right">
-              <span className="text-emerald-400 font-bold">{legendStats.bargain} routes</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold">{legendStats.bargain} routes</span>
             </div>
           </div>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-sky-400 ring-2 ring-sky-500/20"></span>
+              <span className="w-2.5 h-2.5 rounded-full bg-sky-500 ring-2 ring-sky-500/20"></span>
               <span>Normal Baseline</span>
             </div>
             <div className="text-right">
-              <span className="text-sky-400 font-bold">{legendStats.normal} routes</span>
+              <span className="text-sky-600 dark:text-sky-400 font-bold">{legendStats.normal} routes</span>
             </div>
           </div>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 ring-2 ring-amber-500/20"></span>
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 ring-2 ring-amber-500/20"></span>
               <span>Elevated Demand</span>
             </div>
             <div className="text-right">
-              <span className="text-amber-400 font-bold">{legendStats.elevated} routes</span>
+              <span className="text-amber-600 dark:text-amber-400 font-bold">{legendStats.elevated} routes</span>
             </div>
           </div>
 
@@ -638,14 +638,14 @@ export default function IndiaRouteMap({
               <span>Severe Surge</span>
             </div>
             <div className="text-right">
-              <span className="text-red-400 font-bold">{legendStats.surge} routes</span>
+              <span className="text-red-600 dark:text-red-400 font-bold">{legendStats.surge} routes</span>
             </div>
           </div>
         </div>
 
-        <div className="pt-2 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between font-mono">
+        <div className="pt-2 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between font-mono">
           <span>Total:</span>
-          <span className="font-bold text-slate-100">{legendStats.total} routes</span>
+          <span className="font-bold text-slate-800 dark:text-slate-100">{legendStats.total} routes</span>
         </div>
       </div>
 

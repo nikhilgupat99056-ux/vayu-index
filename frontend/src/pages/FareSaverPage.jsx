@@ -240,56 +240,56 @@ export default function FareSaverPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 font-sans">
       
       {/* 1. Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-6 transition-colors">
         <div>
           <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-            <span className="px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-sky-500/20 text-sky-400 border border-sky-500/30">
+            <span className="px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/30">
               SMART FARE SAVER
             </span>
-            <span className="text-xs text-slate-400 font-mono flex items-center gap-1">
-              <CreditCard className="w-3.5 h-3.5 text-sky-400" />
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono flex items-center gap-1">
+              <CreditCard className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
               Credit Card Discount Intelligence Engine
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-100 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
             Cheapest Payable Airfare Optimization
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-3xl">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-3xl">
             Calculates lowest final airfares across all 253+ domestic routes after deducting qualifying credit card instant discounts, festive surge bonuses, and standard convenience fees.
           </p>
         </div>
 
         {/* Network KPI Badges */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
-          <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
+          <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
             <span className="text-slate-500 text-[10px] block">Routes Tracked</span>
-            <span className="text-slate-100 font-bold text-sm">253+ Sectors</span>
+            <span className="text-slate-900 dark:text-slate-100 font-bold text-sm">253+ Sectors</span>
           </div>
-          <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
+          <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
             <span className="text-slate-500 text-[10px] block">Max Discount</span>
-            <span className="text-emerald-400 font-bold text-sm">₹2,500 Off</span>
+            <span className="text-emerald-600 dark:text-emerald-400 font-bold text-sm">₹2,500 Off</span>
           </div>
-          <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
+          <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
             <span className="text-slate-500 text-[10px] block">Avg Savings</span>
-            <span className="text-sky-400 font-bold text-sm">{formatCurrencyINR(summary?.average_savings || 840)}</span>
+            <span className="text-sky-600 dark:text-sky-400 font-bold text-sm">{formatCurrencyINR(summary?.average_savings || 840)}</span>
           </div>
-          <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
+          <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
             <span className="text-slate-500 text-[10px] block">Active Cards</span>
-            <span className="text-amber-400 font-bold text-sm">8 Supported</span>
+            <span className="text-amber-600 dark:text-amber-400 font-bold text-sm">8 Supported</span>
           </div>
         </div>
       </div>
 
       {/* 2. Interactive Filter Bar */}
-      <div className="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-          <span className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 font-mono">
-            <SlidersHorizontal className="w-3.5 h-3.5 text-sky-400" />
+      <div className="p-5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 transition-colors">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5 font-mono">
+            <SlidersHorizontal className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
             Airfare & Card Filters
           </span>
           <button
             onClick={handleResetFilters}
-            className="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-200 transition-colors"
+            className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
           >
             <RotateCcw className="w-3 h-3" />
             <span>Reset All</span>
@@ -300,11 +300,11 @@ export default function FareSaverPage() {
           
           {/* Origin */}
           <div className="space-y-1">
-            <label className="text-[11px] font-medium text-slate-400">Origin Airport</label>
+            <label className="text-[11px] font-medium text-slate-600 dark:text-slate-400">Origin Airport</label>
             <select
               value={origin}
               onChange={(e) => { setOrigin(e.target.value); setCurrentPage(1); }}
-              className="w-full px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-sky-500 text-xs font-mono"
+              className="w-full px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500 text-xs font-mono transition-colors"
             >
               <option value="">All Origins (Pan-India)</option>
               {airports.map(a => (
@@ -317,11 +317,11 @@ export default function FareSaverPage() {
 
           {/* Destination */}
           <div className="space-y-1">
-            <label className="text-[11px] font-medium text-slate-400">Destination Airport</label>
+            <label className="text-[11px] font-medium text-slate-600 dark:text-slate-400">Destination Airport</label>
             <select
               value={destination}
               onChange={(e) => { setDestination(e.target.value); setCurrentPage(1); }}
-              className="w-full px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-sky-500 text-xs font-mono"
+              className="w-full px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500 text-xs font-mono transition-colors"
             >
               <option value="">All Destinations</option>
               {airports.map(a => (
@@ -334,11 +334,11 @@ export default function FareSaverPage() {
 
           {/* Airline */}
           <div className="space-y-1">
-            <label className="text-[11px] font-medium text-slate-400">Airline Carrier</label>
+            <label className="text-[11px] font-medium text-slate-600 dark:text-slate-400">Airline Carrier</label>
             <select
               value={airline}
               onChange={(e) => { setAirline(e.target.value); setCurrentPage(1); }}
-              className="w-full px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-sky-500 text-xs font-mono"
+              className="w-full px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500 text-xs font-mono transition-colors"
             >
               {AIRLINES_LIST.map(al => (
                 <option key={al.code} value={al.code}>
@@ -350,11 +350,11 @@ export default function FareSaverPage() {
 
           {/* Booking Window */}
           <div className="space-y-1">
-            <label className="text-[11px] font-medium text-slate-400">Booking Lead Window</label>
+            <label className="text-[11px] font-medium text-slate-600 dark:text-slate-400">Booking Lead Window</label>
             <select
               value={bookingWindow}
               onChange={(e) => { setBookingWindow(Number(e.target.value)); setCurrentPage(1); }}
-              className="w-full px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-sky-500 text-xs font-mono"
+              className="w-full px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500 text-xs font-mono transition-colors"
             >
               {BOOKING_WINDOWS.map(bw => (
                 <option key={bw.days} value={bw.days}>
@@ -366,7 +366,7 @@ export default function FareSaverPage() {
 
           {/* Credit Card */}
           <div className="space-y-1">
-            <label className="text-[11px] font-medium text-slate-400">Credit Card Offer</label>
+            <label className="text-[11px] font-medium text-slate-600 dark:text-slate-400">Credit Card Offer</label>
             <select
               value={selectedCard}
               onChange={(e) => { 
@@ -374,7 +374,7 @@ export default function FareSaverPage() {
                 setPreviewCard(e.target.value === 'All Cards (Best Deal)' ? null : e.target.value);
                 setCurrentPage(1); 
               }}
-              className="w-full px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-sky-500 text-xs font-mono font-medium"
+              className="w-full px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500 text-xs font-mono font-medium transition-colors"
             >
               {SUPPORTED_CARDS_LIST.map(cardName => (
                 <option key={cardName} value={cardName}>
@@ -386,14 +386,14 @@ export default function FareSaverPage() {
 
           {/* Festival Toggle */}
           <div className="space-y-1">
-            <label className="text-[11px] font-medium text-slate-400">Festival Surge Mode</label>
+            <label className="text-[11px] font-medium text-slate-600 dark:text-slate-400">Festival Surge Mode</label>
             <button
               type="button"
               onClick={() => setIsFestival(!isFestival)}
               className={`w-full py-1.5 px-3 rounded-lg border text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5 ${
                 isFestival
-                  ? 'bg-amber-500/20 text-amber-300 border-amber-500/50'
-                  : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
+                  ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-500/50'
+                  : 'bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               <Sparkles className="w-3.5 h-3.5" />
@@ -408,30 +408,30 @@ export default function FareSaverPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Output Card */}
-        <div className="lg:col-span-2 p-6 rounded-xl bg-slate-900 border border-slate-800 space-y-5">
+        <div className="lg:col-span-2 p-6 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-5 transition-colors">
           
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-4">
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xl font-extrabold text-slate-100 font-mono tracking-tight">
+                <span className="text-xl font-extrabold text-slate-900 dark:text-slate-100 font-mono tracking-tight">
                   {activeOutputData.route_key}
                 </span>
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-slate-500 dark:text-slate-400">
                   ({activeOutputData.origin_city} ➔ {activeOutputData.destination_city})
                 </span>
               </div>
-              <span className="text-[11px] text-slate-400 font-mono flex items-center gap-1 mt-0.5">
-                <Plane className="w-3 h-3 text-sky-400" />
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono flex items-center gap-1 mt-0.5">
+                <Plane className="w-3 h-3 text-sky-500 dark:text-sky-400" />
                 Carriers: {activeOutputData.airline}
               </span>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-1 rounded bg-sky-500/15 text-sky-300 border border-sky-500/30 text-xs font-mono font-bold">
+              <span className="px-2.5 py-1 rounded bg-sky-500/15 text-sky-700 dark:text-sky-300 border border-sky-500/30 text-xs font-mono font-bold">
                 {activeOutputData.card_name}
               </span>
               {activeOutputData.promo_code && activeOutputData.promo_code !== 'STANDARD' && (
-                <span className="px-2 py-1 rounded bg-slate-800 text-amber-400 border border-slate-700 text-xs font-mono font-bold">
+                <span className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-amber-600 dark:text-amber-400 border border-slate-200 dark:border-slate-700 text-xs font-mono font-bold">
                   Code: {activeOutputData.promo_code}
                 </span>
               )}
@@ -442,49 +442,49 @@ export default function FareSaverPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 font-mono">
             
             {/* Original Fare */}
-            <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
               <span className="text-[10px] text-slate-500 uppercase block">Original Fare</span>
-              <span className="text-base font-bold text-slate-200">
+              <span className="text-base font-bold text-slate-800 dark:text-slate-200">
                 {formatCurrencyINR(activeOutputData.original_fare)}
               </span>
             </div>
 
             {/* Card Discount */}
-            <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
               <span className="text-[10px] text-slate-500 uppercase block">Card Discount</span>
-              <span className="text-base font-bold text-sky-400">
+              <span className="text-base font-bold text-sky-600 dark:text-sky-400">
                 {activeOutputData.discount_pct}%
               </span>
             </div>
 
             {/* Instant Discount */}
-            <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
               <span className="text-[10px] text-slate-500 uppercase block">Instant Discount</span>
-              <span className="text-base font-bold text-emerald-400">
+              <span className="text-base font-bold text-emerald-600 dark:text-emerald-400">
                 −{formatCurrencyINR(activeOutputData.instant_discount)}
               </span>
             </div>
 
             {/* Convenience Fee */}
-            <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
               <span className="text-[10px] text-slate-500 uppercase block">Convenience Fee</span>
-              <span className="text-base font-bold text-slate-400">
+              <span className="text-base font-bold text-slate-600 dark:text-slate-400">
                 +{formatCurrencyINR(activeOutputData.convenience_fee)}
               </span>
             </div>
 
             {/* Final Payable Price */}
-            <div className="p-3 rounded-lg bg-sky-950/40 border border-sky-500/40">
-              <span className="text-[10px] text-sky-300 uppercase block font-bold">Final Price</span>
-              <span className="text-lg font-extrabold text-sky-400">
+            <div className="p-3 rounded-lg bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-500/40">
+              <span className="text-[10px] text-sky-700 dark:text-sky-300 uppercase block font-bold">Final Price</span>
+              <span className="text-lg font-extrabold text-sky-600 dark:text-sky-400">
                 {formatCurrencyINR(activeOutputData.final_price)}
               </span>
             </div>
 
             {/* Savings */}
-            <div className="p-3 rounded-lg bg-emerald-950/40 border border-emerald-500/40">
-              <span className="text-[10px] text-emerald-300 uppercase block font-bold">Total Savings</span>
-              <span className="text-lg font-extrabold text-emerald-400">
+            <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-500/40">
+              <span className="text-[10px] text-emerald-700 dark:text-emerald-300 uppercase block font-bold">Total Savings</span>
+              <span className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400">
                 {formatCurrencyINR(activeOutputData.savings)}
               </span>
             </div>
@@ -493,8 +493,8 @@ export default function FareSaverPage() {
 
           {/* Quick Card Simulator Strip for Selected Route */}
           {selectedRoute?.all_card_options && selectedRoute.all_card_options.length > 0 && (
-            <div className="pt-2 border-t border-slate-800 space-y-2">
-              <span className="text-xs text-slate-400 font-mono block">
+            <div className="pt-2 border-t border-slate-200 dark:border-slate-800 space-y-2">
+              <span className="text-xs text-slate-600 dark:text-slate-400 font-mono block">
                 Compare other credit cards for this corridor:
               </span>
               <div className="flex flex-wrap gap-2">
@@ -506,13 +506,13 @@ export default function FareSaverPage() {
                       onClick={() => setPreviewCard(opt.card_name)}
                       className={`px-2.5 py-1.5 rounded-lg text-xs font-mono transition-all flex items-center gap-1.5 border ${
                         isCurrent
-                          ? 'bg-slate-800 text-sky-300 border-sky-500/60 font-bold shadow-sm'
-                          : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200 hover:bg-slate-900'
+                          ? 'bg-slate-100 dark:bg-slate-800 text-sky-700 dark:text-sky-300 border-sky-400 dark:border-sky-500/60 font-bold shadow-sm'
+                          : 'bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900'
                       }`}
                     >
                       <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: opt.color || '#0284c7' }}></span>
                       <span>{opt.card_name}</span>
-                      <span className="text-[10px] text-emerald-400">
+                      <span className="text-[10px] text-emerald-600 dark:text-emerald-400">
                         ({formatCurrencyINR(opt.final_price)})
                       </span>
                     </button>
@@ -525,42 +525,42 @@ export default function FareSaverPage() {
         </div>
 
         {/* Calculation Formula & Strategy Card */}
-        <div className="p-6 rounded-xl bg-slate-900 border border-slate-800 space-y-4">
-          <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono flex items-center gap-1.5">
-            <Info className="w-3.5 h-3.5 text-sky-400" />
+        <div className="p-6 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 transition-colors">
+          <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider font-mono flex items-center gap-1.5">
+            <Info className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
             Formula & Optimization Rule
           </h3>
           
-          <div className="p-3.5 rounded-lg bg-slate-950 border border-slate-800 font-mono text-xs text-slate-300 space-y-1">
+          <div className="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-xs text-slate-700 dark:text-slate-300 space-y-1">
             <span className="text-slate-500 text-[10px] block">PAYABLE AIRFARE EQUATION:</span>
-            <p className="text-sky-300 font-bold">
+            <p className="text-sky-600 dark:text-sky-300 font-bold">
               Final Price = Base Fare − Discount + Fee
             </p>
-            <p className="text-emerald-400 font-bold text-[11px]">
+            <p className="text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">
               Savings = Instant Discount − Fee
             </p>
           </div>
 
-          <div className="space-y-2 text-xs text-slate-300 leading-relaxed font-sans">
+          <div className="space-y-2 text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-sans">
             <p>
               When multiple credit cards qualify for a sector, VAYU-Index automatically selects the card yielding the maximum net savings.
             </p>
-            <div className="pt-2 border-t border-slate-800 text-[11px] font-mono text-slate-400 space-y-1">
+            <div className="pt-2 border-t border-slate-200 dark:border-slate-800 text-[11px] font-mono text-slate-500 dark:text-slate-400 space-y-1">
               <div className="flex justify-between">
                 <span>Axis Atlas:</span>
-                <span className="text-slate-200 font-bold">15% up to ₹2,500</span>
+                <span className="text-slate-800 dark:text-slate-200 font-bold">15% up to ₹2,500</span>
               </div>
               <div className="flex justify-between">
                 <span>HDFC Regalia Gold:</span>
-                <span className="text-slate-200 font-bold">12%–15% up to ₹2,500</span>
+                <span className="text-slate-800 dark:text-slate-200 font-bold">12%–15% up to ₹2,500</span>
               </div>
               <div className="flex justify-between">
                 <span>SBI Cashback:</span>
-                <span className="text-slate-200 font-bold">10%–12% up to ₹1,800</span>
+                <span className="text-slate-800 dark:text-slate-200 font-bold">10%–12% up to ₹1,800</span>
               </div>
               <div className="flex justify-between">
                 <span>ICICI Sapphiro:</span>
-                <span className="text-slate-200 font-bold">14% up to ₹2,200</span>
+                <span className="text-slate-800 dark:text-slate-200 font-bold">14% up to ₹2,200</span>
               </div>
             </div>
           </div>
@@ -569,16 +569,16 @@ export default function FareSaverPage() {
       </div>
 
       {/* 4. Complete Route Table (All 253 Domestic Routes) */}
-      <div className="p-6 rounded-xl bg-slate-900 border border-slate-800 space-y-4">
+      <div className="p-6 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 transition-colors">
         
         {/* Table Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
           <div>
-            <h2 className="text-sm font-bold text-slate-100 uppercase tracking-wider font-mono flex items-center gap-2">
-              <Tag className="w-4 h-4 text-emerald-400" />
+            <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider font-mono flex items-center gap-2">
+              <Tag className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
               Domestic Route Discount Matrix ({filteredTableRoutes.length} Corridors)
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Click on any row to inspect complete price breakdown and simulated card options.
             </p>
           </div>
@@ -592,7 +592,7 @@ export default function FareSaverPage() {
                 placeholder="Search city, IATA or card..."
                 value={tableSearch}
                 onChange={(e) => { setTableSearch(e.target.value); setCurrentPage(1); }}
-                className="pl-8 pr-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500 font-mono w-48 sm:w-56"
+                className="pl-8 pr-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500 font-mono w-48 sm:w-56 transition-colors"
               />
             </div>
 
@@ -602,7 +602,7 @@ export default function FareSaverPage() {
               <select
                 value={sortBy}
                 onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1); }}
-                className="px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-sky-500 text-xs font-mono"
+                className="px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500 text-xs font-mono transition-colors"
               >
                 <option value="savings_desc">Sort: Highest Savings</option>
                 <option value="final_price_asc">Sort: Final Price (Low to High)</option>
@@ -617,29 +617,29 @@ export default function FareSaverPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-slate-800 text-slate-400 font-mono text-[11px] uppercase bg-slate-950/60">
+              <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-mono text-[11px] uppercase bg-slate-50 dark:bg-slate-950/60">
                 <th className="py-2.5 px-3">Origin</th>
                 <th className="py-2.5 px-3">Destination</th>
                 <th className="py-2.5 px-3">Airline</th>
                 <th className="py-2.5 px-3 text-right">Base Fare</th>
                 <th className="py-2.5 px-3">Best Card</th>
                 <th className="py-2.5 px-3 text-right">Discount %</th>
-                <th className="py-2.5 px-3 text-right font-bold text-sky-400">Final Price</th>
-                <th className="py-2.5 px-3 text-right font-bold text-emerald-400">Savings</th>
+                <th className="py-2.5 px-3 text-right font-bold text-sky-600 dark:text-sky-400">Final Price</th>
+                <th className="py-2.5 px-3 text-right font-bold text-emerald-600 dark:text-emerald-400">Savings</th>
                 <th className="py-2.5 px-3 text-center">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60">
               {loading ? (
                 <tr>
-                  <td colSpan={9} className="py-8 text-center text-slate-400 font-mono">
+                  <td colSpan={9} className="py-8 text-center text-slate-500 dark:text-slate-400 font-mono">
                     <div className="w-5 h-5 border-2 border-sky-400 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
                     <span>Calculating lowest payable airfares...</span>
                   </td>
                 </tr>
               ) : paginatedRoutes.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="py-8 text-center text-slate-400 font-mono">
+                  <td colSpan={9} className="py-8 text-center text-slate-500 dark:text-slate-400 font-mono">
                     No matching corridors found for the selected filter combination.
                   </td>
                 </tr>
@@ -650,36 +650,36 @@ export default function FareSaverPage() {
                     <tr 
                       key={`row-${r.route_id}`}
                       onClick={() => { setSelectedRoute(r); setPreviewCard(null); }}
-                      className={`hover:bg-slate-800/40 cursor-pointer transition-colors ${
-                        isSelected ? 'bg-sky-500/10' : ''
+                      className={`hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors ${
+                        isSelected ? 'bg-sky-50 dark:bg-sky-500/10' : ''
                       }`}
                     >
                       <td className="py-2.5 px-3">
-                        <span className="font-mono font-bold text-slate-100">{r.origin}</span>
-                        <span className="text-[10px] text-slate-400 block truncate max-w-[110px]">{r.origin_city}</span>
+                        <span className="font-mono font-bold text-slate-900 dark:text-slate-100">{r.origin}</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate max-w-[110px]">{r.origin_city}</span>
                       </td>
                       <td className="py-2.5 px-3">
-                        <span className="font-mono font-bold text-slate-100">{r.destination}</span>
-                        <span className="text-[10px] text-slate-400 block truncate max-w-[110px]">{r.destination_city}</span>
+                        <span className="font-mono font-bold text-slate-900 dark:text-slate-100">{r.destination}</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate max-w-[110px]">{r.destination_city}</span>
                       </td>
-                      <td className="py-2.5 px-3 font-mono text-slate-300">
+                      <td className="py-2.5 px-3 font-mono text-slate-700 dark:text-slate-300">
                         {r.airline}
                       </td>
-                      <td className="py-2.5 px-3 font-mono text-right text-slate-300">
+                      <td className="py-2.5 px-3 font-mono text-right text-slate-700 dark:text-slate-300">
                         {formatCurrencyINR(r.base_fare)}
                       </td>
                       <td className="py-2.5 px-3">
-                        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-800 text-sky-300 border border-slate-700 whitespace-nowrap">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-sky-700 dark:text-sky-300 border border-slate-200 dark:border-slate-700 whitespace-nowrap">
                           {r.best_card}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 font-mono text-right text-sky-400 font-bold">
+                      <td className="py-2.5 px-3 font-mono text-right text-sky-600 dark:text-sky-400 font-bold">
                         {r.discount_pct}%
                       </td>
-                      <td className="py-2.5 px-3 font-mono text-right text-sky-400 font-bold">
+                      <td className="py-2.5 px-3 font-mono text-right text-sky-600 dark:text-sky-400 font-bold">
                         {formatCurrencyINR(r.final_price)}
                       </td>
-                      <td className="py-2.5 px-3 font-mono text-right text-emerald-400 font-bold">
+                      <td className="py-2.5 px-3 font-mono text-right text-emerald-600 dark:text-emerald-400 font-bold">
                         {formatCurrencyINR(r.savings)}
                       </td>
                       <td className="py-2.5 px-3 text-center">
@@ -689,7 +689,7 @@ export default function FareSaverPage() {
                             setSelectedRoute(r);
                             setPreviewCard(null);
                           }}
-                          className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-sky-400 text-[10px] font-mono font-bold transition-colors border border-slate-700"
+                          className="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-sky-600 dark:text-sky-400 text-[10px] font-mono font-bold transition-colors border border-slate-200 dark:border-slate-700"
                         >
                           Select
                         </button>
@@ -703,7 +703,7 @@ export default function FareSaverPage() {
         </div>
 
         {/* Pagination Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-3 border-t border-slate-800 text-xs font-mono text-slate-400">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-mono text-slate-500 dark:text-slate-400">
           <div>
             Showing {(currentPage - 1) * pageSize + 1} to {Math.min(currentPage * pageSize, filteredTableRoutes.length)} of {filteredTableRoutes.length} corridors
           </div>
@@ -711,7 +711,7 @@ export default function FareSaverPage() {
             <button
               disabled={currentPage <= 1}
               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-              className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-40 disabled:pointer-events-none"
+              className="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 disabled:opacity-40 disabled:pointer-events-none transition-colors"
             >
               Previous
             </button>
@@ -719,7 +719,7 @@ export default function FareSaverPage() {
             <button
               disabled={currentPage >= totalPages}
               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-              className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-40 disabled:pointer-events-none"
+              className="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 disabled:opacity-40 disabled:pointer-events-none transition-colors"
             >
               Next
             </button>
@@ -729,21 +729,21 @@ export default function FareSaverPage() {
       </div>
 
       {/* 5. Comprehensive Smart Analytics Section */}
-      <div className="p-6 rounded-xl bg-slate-900 border border-slate-800 space-y-6">
+      <div className="p-6 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6 transition-colors">
         
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
           <div>
-            <h2 className="text-sm font-bold text-slate-100 uppercase tracking-wider font-mono flex items-center gap-2">
-              <Award className="w-4 h-4 text-sky-400" />
+            <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider font-mono flex items-center gap-2">
+              <Award className="w-4 h-4 text-sky-500 dark:text-sky-400" />
               Fare Saver Discount Analytics & Intelligence
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Deep-dive metrics across top savings sectors, bank benchmarks, airline compatibility, and festival deltas.
             </p>
           </div>
 
           {/* Analytics Tabs */}
-          <div className="flex items-center gap-1 p-1 rounded-lg bg-slate-950 border border-slate-800 overflow-x-auto">
+          <div className="flex items-center gap-1 p-1 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 overflow-x-auto">
             {[
               { id: 'top_routes', label: 'Top 10 Routes' },
               { id: 'bank_avg', label: 'Bank Averages' },
@@ -756,8 +756,8 @@ export default function FareSaverPage() {
                 onClick={() => setActiveAnalyticsTab(tab.id)}
                 className={`px-3 py-1 rounded text-xs font-mono font-medium transition-colors whitespace-nowrap ${
                   activeAnalyticsTab === tab.id
-                    ? 'bg-slate-800 text-sky-400 border border-slate-700 font-bold'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 border border-slate-200 dark:border-slate-700 font-bold shadow-sm'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                 }`}
               >
                 {tab.label}
@@ -769,7 +769,7 @@ export default function FareSaverPage() {
         {/* Tab 1: Top 10 Routes with Highest Savings */}
         {activeAnalyticsTab === 'top_routes' && (
           <div className="space-y-3">
-            <span className="text-xs font-mono text-slate-400 block">
+            <span className="text-xs font-mono text-slate-500 dark:text-slate-400 block">
               Long-haul and premium sectors delivering the greatest rupee discount:
             </span>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -780,30 +780,30 @@ export default function FareSaverPage() {
                     const match = routesData.find(item => item.route_id === r.route_id);
                     if (match) setSelectedRoute(match);
                   }}
-                  className="p-3.5 rounded-lg bg-slate-950 border border-slate-800 hover:border-sky-500/40 cursor-pointer transition-all flex items-center justify-between"
+                  className="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 hover:border-sky-500/40 cursor-pointer transition-all flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded bg-slate-800 text-slate-300 font-mono text-xs font-bold flex items-center justify-center shrink-0">
+                    <span className="w-6 h-6 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono text-xs font-bold flex items-center justify-center shrink-0">
                       {idx + 1}
                     </span>
                     <div>
-                      <div className="flex items-center gap-1.5 font-mono font-bold text-xs text-sky-400">
+                      <div className="flex items-center gap-1.5 font-mono font-bold text-xs text-sky-600 dark:text-sky-400">
                         <span>{r.origin}</span>
                         <span>➔</span>
                         <span>{r.destination}</span>
-                        <span className="text-[10px] text-slate-400 font-normal">({r.origin_city} to {r.destination_city})</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">({r.origin_city} to {r.destination_city})</span>
                       </div>
-                      <span className="text-[10px] text-slate-400 block font-mono">
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-mono">
                         Base: {formatCurrencyINR(r.base_fare)} &bull; {r.best_card}
                       </span>
                     </div>
                   </div>
 
                   <div className="text-right font-mono">
-                    <span className="text-xs font-bold text-emerald-400 block">
+                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 block">
                       Save {formatCurrencyINR(r.savings)}
                     </span>
-                    <span className="text-[10px] text-sky-300 font-medium">
+                    <span className="text-[10px] text-sky-600 dark:text-sky-300 font-medium">
                       Final {formatCurrencyINR(r.final_price)}
                     </span>
                   </div>
@@ -816,32 +816,32 @@ export default function FareSaverPage() {
         {/* Tab 2: Average Savings by Bank */}
         {activeAnalyticsTab === 'bank_avg' && (
           <div className="space-y-4">
-            <span className="text-xs font-mono text-slate-400 block">
+            <span className="text-xs font-mono text-slate-500 dark:text-slate-400 block">
               Average rupee savings and active card inventory across premier Indian banking networks:
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {(analytics?.bank_savings_avg || []).map(b => (
-                <div key={b.bank} className="p-4 rounded-lg bg-slate-950 border border-slate-800 space-y-3">
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                <div key={b.bank} className="p-4 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full" style={{ backgroundColor: b.color }}></span>
-                      <span className="font-bold text-sm text-slate-100 font-mono">{b.bank}</span>
+                      <span className="font-bold text-sm text-slate-900 dark:text-slate-100 font-mono">{b.bank}</span>
                     </div>
-                    <span className="text-[10px] font-mono text-slate-400">
+                    <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
                       {b.supported_cards} Cards
                     </span>
                   </div>
 
                   <div className="space-y-1 font-mono">
                     <span className="text-[10px] text-slate-500 block">Average Savings / Sector</span>
-                    <span className="text-xl font-extrabold text-emerald-400">
+                    <span className="text-xl font-extrabold text-emerald-600 dark:text-emerald-400">
                       {formatCurrencyINR(b.average_savings)}
                     </span>
                   </div>
 
-                  <div className="pt-2 border-t border-slate-800/80 text-[11px] font-mono text-slate-400 flex justify-between">
+                  <div className="pt-2 border-t border-slate-200 dark:border-slate-800/80 text-[11px] font-mono text-slate-500 dark:text-slate-400 flex justify-between">
                     <span>Peak Corridor Cap:</span>
-                    <span className="text-slate-200 font-bold">{formatCurrencyINR(b.max_savings)}</span>
+                    <span className="text-slate-800 dark:text-slate-200 font-bold">{formatCurrencyINR(b.max_savings)}</span>
                   </div>
                 </div>
               ))}
@@ -852,37 +852,37 @@ export default function FareSaverPage() {
         {/* Tab 3: Airline vs Card Compatibility Chart */}
         {activeAnalyticsTab === 'airline_compat' && (
           <div className="space-y-3">
-            <span className="text-xs font-mono text-slate-400 block">
+            <span className="text-xs font-mono text-slate-500 dark:text-slate-400 block">
               Optimal credit card synergy across India's 5 domestic airlines:
             </span>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {(analytics?.airline_card_compatibility || []).map(al => (
-                <div key={al.code} className="p-4 rounded-lg bg-slate-950 border border-slate-800 space-y-2">
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                    <span className="font-bold text-sm text-sky-400 font-mono">
+                <div key={al.code} className="p-4 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+                    <span className="font-bold text-sm text-sky-600 dark:text-sky-400 font-mono">
                       {al.name} ({al.code})
                     </span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-emerald-400 font-mono font-bold">
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 font-mono font-bold border border-slate-200 dark:border-slate-700">
                       Up to {al.top_discount_pct}% Off
                     </span>
                   </div>
 
                   <div className="space-y-1 text-xs font-mono">
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Best Card:</span>
-                      <span className="text-slate-200 font-bold">{al.best_card}</span>
+                      <span className="text-slate-500 dark:text-slate-400">Best Card:</span>
+                      <span className="text-slate-800 dark:text-slate-200 font-bold">{al.best_card}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Avg Sector Savings:</span>
-                      <span className="text-emerald-400 font-bold">{formatCurrencyINR(al.avg_savings)}</span>
+                      <span className="text-slate-500 dark:text-slate-400">Avg Sector Savings:</span>
+                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">{formatCurrencyINR(al.avg_savings)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Top Promo Code:</span>
-                      <span className="text-amber-400 font-bold">{al.best_promo}</span>
+                      <span className="text-slate-500 dark:text-slate-400">Top Promo Code:</span>
+                      <span className="text-amber-600 dark:text-amber-400 font-bold">{al.best_promo}</span>
                     </div>
-                    <div className="flex justify-between pt-1 text-[10px] text-slate-500">
+                    <div className="flex justify-between pt-1 text-[10px] text-slate-400 dark:text-slate-500">
                       <span>Coverage:</span>
-                      <span className="text-slate-300">{al.compatibility}</span>
+                      <span className="text-slate-700 dark:text-slate-300">{al.compatibility}</span>
                     </div>
                   </div>
                 </div>
@@ -894,7 +894,7 @@ export default function FareSaverPage() {
         {/* Tab 4: Booking Lead-Time Histogram */}
         {activeAnalyticsTab === 'lead_time' && (
           <div className="space-y-4">
-            <span className="text-xs font-mono text-slate-400 block">
+            <span className="text-xs font-mono text-slate-500 dark:text-slate-400 block">
               How advance booking windows alter the effective card discount yield:
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 font-mono">
@@ -903,26 +903,26 @@ export default function FareSaverPage() {
                   key={w.window} 
                   className={`p-3.5 rounded-lg border space-y-2 ${
                     w.sweet_spot 
-                      ? 'bg-emerald-950/20 border-emerald-500/40 ring-1 ring-emerald-500/20' 
-                      : 'bg-slate-950 border-slate-800'
+                      ? 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-500/40 ring-1 ring-emerald-400/20' 
+                      : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800'
                   }`}
                 >
-                  <span className="text-xs font-bold text-slate-200 block truncate">
+                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block truncate">
                     {w.window}
                   </span>
                   
                   <div className="space-y-1">
                     <span className="text-[10px] text-slate-500 block">Avg Base Fare</span>
-                    <span className="text-sm font-bold text-slate-300">{formatCurrencyINR(w.avg_fare)}</span>
+                    <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{formatCurrencyINR(w.avg_fare)}</span>
                   </div>
 
-                  <div className="pt-2 border-t border-slate-800/80 space-y-0.5">
-                    <span className="text-[10px] text-emerald-400 block">Avg Net Savings</span>
-                    <span className="text-base font-extrabold text-emerald-400">{formatCurrencyINR(w.avg_savings)}</span>
+                  <div className="pt-2 border-t border-slate-200 dark:border-slate-800/80 space-y-0.5">
+                    <span className="text-[10px] text-emerald-600 dark:text-emerald-400 block">Avg Net Savings</span>
+                    <span className="text-base font-extrabold text-emerald-600 dark:text-emerald-400">{formatCurrencyINR(w.avg_savings)}</span>
                   </div>
 
                   {w.sweet_spot && (
-                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold block text-center">
+                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-bold block text-center border border-emerald-500/30">
                       Sweet Spot
                     </span>
                   )}
@@ -935,66 +935,66 @@ export default function FareSaverPage() {
         {/* Tab 5: Festival Offer Comparison */}
         {activeAnalyticsTab === 'festival_compare' && (
           <div className="space-y-4 font-sans">
-            <span className="text-xs font-mono text-slate-400 block">
+            <span className="text-xs font-mono text-slate-500 dark:text-slate-400 block">
               Evaluating credit card discount impact during peak festive surges vs standard commercial periods:
             </span>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
               
               {/* Regular Period */}
-              <div className="p-4 rounded-lg bg-slate-950 border border-slate-800 space-y-2.5">
-                <span className="text-xs font-bold text-slate-300 uppercase block tracking-wider border-b border-slate-800 pb-2">
+              <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2.5">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-300 uppercase block tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">
                   Regular Commercial Travel
                 </span>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Average Base Fare:</span>
-                  <span className="text-slate-200 font-bold">{formatCurrencyINR(analytics?.festival_comparison?.normal_travel?.avg_base_fare || 5250)}</span>
+                  <span className="text-slate-500 dark:text-slate-400">Average Base Fare:</span>
+                  <span className="text-slate-800 dark:text-slate-200 font-bold">{formatCurrencyINR(analytics?.festival_comparison?.normal_travel?.avg_base_fare || 5250)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Average Discount:</span>
-                  <span className="text-sky-400 font-bold">{analytics?.festival_comparison?.normal_travel?.avg_discount_pct || 12.5}%</span>
+                  <span className="text-slate-500 dark:text-slate-400">Average Discount:</span>
+                  <span className="text-sky-600 dark:text-sky-400 font-bold">{analytics?.festival_comparison?.normal_travel?.avg_discount_pct || 12.5}%</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Average Net Savings:</span>
-                  <span className="text-emerald-400 font-bold">{formatCurrencyINR(analytics?.festival_comparison?.normal_travel?.avg_savings || 780)}</span>
+                  <span className="text-slate-500 dark:text-slate-400">Average Net Savings:</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">{formatCurrencyINR(analytics?.festival_comparison?.normal_travel?.avg_savings || 780)}</span>
                 </div>
-                <div className="flex justify-between pt-1 border-t border-slate-800 text-[11px]">
+                <div className="flex justify-between pt-1 border-t border-slate-200 dark:border-slate-800 text-[11px]">
                   <span className="text-slate-500">Effective Payable:</span>
-                  <span className="text-slate-200 font-bold">{formatCurrencyINR(analytics?.festival_comparison?.normal_travel?.effective_payable || 4769)}</span>
+                  <span className="text-slate-800 dark:text-slate-200 font-bold">{formatCurrencyINR(analytics?.festival_comparison?.normal_travel?.effective_payable || 4769)}</span>
                 </div>
               </div>
 
               {/* Festival Surge Period */}
-              <div className="p-4 rounded-lg bg-amber-950/20 border border-amber-500/40 space-y-2.5">
-                <span className="text-xs font-bold text-amber-300 uppercase block tracking-wider border-b border-amber-500/30 pb-2">
+              <div className="p-4 rounded-lg bg-amber-500/10 dark:bg-amber-950/20 border border-amber-500/30 dark:border-amber-500/40 space-y-2.5">
+                <span className="text-xs font-bold text-amber-700 dark:text-amber-300 uppercase block tracking-wider border-b border-amber-500/30 pb-2">
                   Festival Surge Travel (Diwali, Chhath, Durga Puja)
                 </span>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Average Base Fare:</span>
-                  <span className="text-slate-200 font-bold">{formatCurrencyINR(analytics?.festival_comparison?.festival_surge?.avg_base_fare || 7650)}</span>
+                  <span className="text-slate-600 dark:text-slate-400">Average Base Fare:</span>
+                  <span className="text-slate-800 dark:text-slate-200 font-bold">{formatCurrencyINR(analytics?.festival_comparison?.festival_surge?.avg_base_fare || 7650)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Average Discount (w/ Festive Bonus):</span>
-                  <span className="text-amber-400 font-bold">{analytics?.festival_comparison?.festival_surge?.avg_discount_pct || 15.5}%</span>
+                  <span className="text-slate-600 dark:text-slate-400">Average Discount (w/ Festive Bonus):</span>
+                  <span className="text-amber-600 dark:text-amber-400 font-bold">{analytics?.festival_comparison?.festival_surge?.avg_discount_pct || 15.5}%</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Average Net Savings:</span>
-                  <span className="text-emerald-400 font-bold">{formatCurrencyINR(analytics?.festival_comparison?.festival_surge?.avg_savings || 1240)}</span>
+                  <span className="text-slate-600 dark:text-slate-400">Average Net Savings:</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">{formatCurrencyINR(analytics?.festival_comparison?.festival_surge?.avg_savings || 1240)}</span>
                 </div>
                 <div className="flex justify-between pt-1 border-t border-amber-500/30 text-[11px]">
-                  <span className="text-amber-300">Effective Payable:</span>
-                  <span className="text-slate-200 font-bold">{formatCurrencyINR(analytics?.festival_comparison?.festival_surge?.effective_payable || 6709)}</span>
+                  <span className="text-amber-700 dark:text-amber-300">Effective Payable:</span>
+                  <span className="text-slate-800 dark:text-slate-200 font-bold">{formatCurrencyINR(analytics?.festival_comparison?.festival_surge?.effective_payable || 6709)}</span>
                 </div>
               </div>
 
             </div>
 
             {/* Delta summary note */}
-            <div className="p-3.5 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-300 flex items-center justify-between font-mono">
-              <span className="text-emerald-400 font-bold">
+            <div className="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 flex items-center justify-between font-mono">
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold">
                 Extra Festival Net Savings: +{formatCurrencyINR(analytics?.festival_comparison?.festival_delta?.extra_savings || 460)} (+59% Increase)
               </span>
-              <span className="text-slate-400 text-[11px]">
+              <span className="text-slate-500 dark:text-slate-400 text-[11px]">
                 {analytics?.festival_comparison?.festival_delta?.advice}
               </span>
             </div>

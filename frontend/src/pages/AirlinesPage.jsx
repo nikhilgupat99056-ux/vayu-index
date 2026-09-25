@@ -69,24 +69,24 @@ export default function AirlinesPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800/80 pb-6 transition-colors">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-sky-500/20 text-sky-400 border border-sky-500/30">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/30">
               COMMERCIAL OPERATOR INTELLIGENCE
             </span>
-            <span className="text-xs text-slate-400 font-mono">5 Major Indian Carriers</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">5 Major Indian Carriers</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-100 tracking-tight">
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
             Airline Fleet & Tariff Profiles
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
             Real-time benchmarking across domestic market share, average seat yield, punctuality, and route footprint.
           </p>
         </div>
 
-        <div className="flex items-center gap-3 text-xs font-mono text-slate-400 bg-slate-900/80 px-4 py-2 rounded-2xl border border-slate-800">
-          <span>Total Fleet Tracked: <strong className="text-sky-400">700 Aircraft</strong></span>
+        <div className="flex items-center gap-3 text-xs font-mono text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900/80 px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+          <span>Total Fleet Tracked: <strong className="text-sky-600 dark:text-sky-400">700 Aircraft</strong></span>
         </div>
       </div>
 
@@ -96,30 +96,32 @@ export default function AirlinesPage() {
           return (
             <div
               key={al.code}
-              className="p-6 rounded-3xl glass-panel border border-slate-800 hover:border-slate-700 transition-all duration-300 hover:-translate-y-1 hover:shadow-glass flex flex-col justify-between"
+              className="p-6 rounded-3xl glass-panel border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 hover:-translate-y-1 hover:shadow-glass flex flex-col justify-between"
             >
               <div>
                 {/* Header with SVG Logo and Status Badge */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="p-1 rounded-2xl bg-slate-900 border border-slate-800">
+                    <div className="p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
                       {AirlineLogos[al.code] || AirlineLogos["6E"]}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xl font-extrabold text-slate-100">{al.name}</span>
-                        <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-slate-800 text-sky-400 font-bold border border-slate-700">
+                        <span className="text-xl font-extrabold text-slate-900 dark:text-slate-100">{al.name}</span>
+                        <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-sky-600 dark:text-sky-400 font-bold border border-slate-200 dark:border-slate-700">
                           {al.code}
                         </span>
                       </div>
-                      <span className="text-[11px] text-slate-400 block truncate max-w-[180px]">
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400 block truncate max-w-[180px]">
                         {al.full_name}
                       </span>
                     </div>
                   </div>
 
                   <span className={`text-[10px] uppercase font-bold font-mono px-2 py-0.5 rounded-full ${
-                    al.trend === 'EXPANDING' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'bg-slate-800 text-slate-300 border border-slate-700'
+                    al.trend === 'EXPANDING' 
+                      ? 'bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/30' 
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
                   }`}>
                     {al.trend}
                   </span>
@@ -128,10 +130,10 @@ export default function AirlinesPage() {
                 {/* Market Share Progress Bar */}
                 <div className="my-4 space-y-1.5">
                   <div className="flex justify-between text-xs font-mono">
-                    <span className="text-slate-400">Domestic Market Share:</span>
-                    <span className="font-bold text-slate-200">{al.market_share}%</span>
+                    <span className="text-slate-500 dark:text-slate-400">Domestic Market Share:</span>
+                    <span className="font-bold text-slate-800 dark:text-slate-200">{al.market_share}%</span>
                   </div>
-                  <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{
@@ -145,30 +147,30 @@ export default function AirlinesPage() {
                 {/* 4-KPI Mini Matrix */}
                 <div className="grid grid-cols-2 gap-3 my-4 text-xs font-mono">
                   
-                  <div className="p-3 rounded-2xl bg-slate-900/60 border border-slate-800/80">
-                    <span className="text-slate-500 text-[10px] block mb-0.5">Average Tariff:</span>
-                    <span className="text-base font-bold text-emerald-400">
+                  <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80">
+                    <span className="text-slate-500 dark:text-slate-400 text-[10px] block mb-0.5">Average Tariff:</span>
+                    <span className="text-base font-bold text-emerald-600 dark:text-emerald-400">
                       {formatCurrencyINR(al.avg_fare, '₹4,950')}
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-2xl bg-slate-900/60 border border-slate-800/80">
-                    <span className="text-slate-500 text-[10px] block mb-0.5">On-Time %:</span>
-                    <span className="text-base font-bold text-sky-400">
+                  <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80">
+                    <span className="text-slate-500 dark:text-slate-400 text-[10px] block mb-0.5">On-Time %:</span>
+                    <span className="text-base font-bold text-sky-600 dark:text-sky-400">
                       {formatPercentage(al.on_time_percent, false)}
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-2xl bg-slate-900/60 border border-slate-800/80">
-                    <span className="text-slate-500 text-[10px] block mb-0.5">Fleet Size:</span>
-                    <span className="text-base font-bold text-slate-200">
+                  <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80">
+                    <span className="text-slate-500 dark:text-slate-400 text-[10px] block mb-0.5">Fleet Size:</span>
+                    <span className="text-base font-bold text-slate-800 dark:text-slate-200">
                       {al.fleet_size} Jets
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-2xl bg-slate-900/60 border border-slate-800/80">
-                    <span className="text-slate-500 text-[10px] block mb-0.5">Sectors Served:</span>
-                    <span className="text-base font-bold text-slate-200">
+                  <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80">
+                    <span className="text-slate-500 dark:text-slate-400 text-[10px] block mb-0.5">Sectors Served:</span>
+                    <span className="text-base font-bold text-slate-800 dark:text-slate-200">
                       {al.routes_covered || 95}+
                     </span>
                   </div>
@@ -177,12 +179,12 @@ export default function AirlinesPage() {
               </div>
 
               {/* Footer specs */}
-              <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
-                <span className="flex items-center gap-1 text-emerald-400 font-mono">
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+                <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-mono">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   DGCA Monitored
                 </span>
-                <span className="font-mono text-slate-500">Tier 1 Operator</span>
+                <span className="font-mono text-slate-400 dark:text-slate-500">Tier 1 Operator</span>
               </div>
             </div>
           );

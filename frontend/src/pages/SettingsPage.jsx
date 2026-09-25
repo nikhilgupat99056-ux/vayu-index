@@ -8,16 +8,20 @@ import {
   Shield, 
   Sliders, 
   Check, 
-  AlertCircle,
-  Radio,
-  SlidersHorizontal,
-  Activity,
-  CheckCircle2,
-  XCircle,
-  Wifi,
-  ExternalLink
+  AlertCircle, 
+  Radio, 
+  SlidersHorizontal, 
+  Activity, 
+  CheckCircle2, 
+  XCircle, 
+  Wifi, 
+  ExternalLink,
+  Sun,
+  Moon,
+  Monitor
 } from 'lucide-react';
 import { fetchHealth, pingHealth } from '../services/api';
+import { useTheme } from '../context/ThemeContext';
 
 export default function SettingsPage() {
   const [health, setHealth] = useState(null);
@@ -28,6 +32,8 @@ export default function SettingsPage() {
   const [refreshInterval, setRefreshInterval] = useState(60);
   const [savedNotification, setSavedNotification] = useState(false);
   const pollTimerRef = useRef(null);
+
+  const { theme, toggleTheme, isDark } = useTheme();
 
   // Check health and auto-poll with retry logic if offline
   const checkServerStatus = async () => {
@@ -89,49 +95,123 @@ export default function SettingsPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800/80 pb-6 transition-colors">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-sky-500/20 text-sky-400 border border-sky-500/30">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/30">
               SYSTEM CONFIGURATION
             </span>
-            <span className="text-xs text-slate-400 font-mono">Platform Telemetry & Model Weights</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">Platform Telemetry & Model Weights</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-100 tracking-tight">
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
             Platform Engine Settings
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Manage yield regression baseline thresholds, background poll cadence, and carrier pipeline health.
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Manage yield regression baseline thresholds, background poll cadence, appearance, and carrier pipeline health.
           </p>
         </div>
 
         {savedNotification && (
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-mono font-bold animate-pulse">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-xs font-mono font-bold animate-pulse">
             <Check className="w-4 h-4" />
             <span>Parameters Successfully Applied</span>
           </div>
         )}
       </div>
 
+      {/* APPEARANCE & THEME PREFERENCE CARD */}
+      <div className="p-6 rounded-3xl glass-panel border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 transition-colors">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div className="flex items-center gap-2.5">
+            {isDark ? <Moon className="w-5 h-5 text-indigo-400" /> : <Sun className="w-5 h-5 text-amber-500" />}
+            <div>
+              <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                Interface Theme & Display Preferences
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Customize appearance. Class-based Tailwind dark mode with automatic local persistence.
+              </p>
+            </div>
+          </div>
+          <span className="text-xs font-mono font-semibold px-2.5 py-1 rounded-lg bg-sky-50 dark:bg-slate-800 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-slate-700">
+            Active: {isDark ? 'Dark Theme (🌙)' : 'Light Theme (☀️)'}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          {/* Light Mode Selection Option */}
+          <button
+            type="button"
+            onClick={() => { if (isDark) toggleTheme(); }}
+            className={`p-4 rounded-2xl border text-left transition-all flex items-center justify-between ${
+              !isDark
+                ? 'bg-sky-50/80 border-sky-400 shadow-sm ring-2 ring-sky-400/30'
+                : 'bg-slate-50 dark:bg-slate-950/70 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                <Sun className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="text-sm font-bold text-slate-900 dark:text-slate-100 block">Light Mode</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400">Crisp high-contrast day display with clean borders</span>
+              </div>
+            </div>
+            {!isDark && (
+              <span className="text-xs font-bold text-sky-600 flex items-center gap-1 font-mono">
+                <CheckCircle2 className="w-4 h-4" /> Active
+              </span>
+            )}
+          </button>
+
+          {/* Dark Mode Selection Option */}
+          <button
+            type="button"
+            onClick={() => { if (!isDark) toggleTheme(); }}
+            className={`p-4 rounded-2xl border text-left transition-all flex items-center justify-between ${
+              isDark
+                ? 'bg-slate-800/80 border-sky-500 shadow-sm ring-2 ring-sky-500/30'
+                : 'bg-slate-50 dark:bg-slate-950/70 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
+                <Moon className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="text-sm font-bold text-slate-900 dark:text-slate-100 block">Dark Mode</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400">Deep Bloomberg x FlightRadar24 navy night interface</span>
+              </div>
+            </div>
+            {isDark && (
+              <span className="text-xs font-bold text-sky-400 flex items-center gap-1 font-mono">
+                <CheckCircle2 className="w-4 h-4" /> Active
+              </span>
+            )}
+          </button>
+        </div>
+      </div>
+
       {/* API NODE DIAGNOSTICS & LIVE STATUS CARD */}
-      <div className="p-6 rounded-3xl glass-panel-elevated border border-sky-500/30 shadow-glass space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div className="p-6 rounded-3xl glass-panel-elevated border border-sky-500/30 shadow-glass space-y-5 transition-colors">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
           <div className="flex items-center gap-3">
-            <div className={`p-2.5 rounded-2xl ${isOnline ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-glow-emerald' : 'bg-red-500/20 text-red-400 border border-red-500/40'}`}>
+            <div className={`p-2.5 rounded-2xl ${isOnline ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/40 shadow-glow-emerald' : 'bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/40'}`}>
               <Server className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center gap-2.5">
-                <h2 className="text-base font-extrabold text-slate-100 tracking-wide">
+                <h2 className="text-base font-extrabold text-slate-900 dark:text-slate-100 tracking-wide">
                   API Node Diagnostics
                 </h2>
-                {/* DYNAMIC STATUS BADGE: Changes from OFFLINE (red) to ONLINE (green) */}
+                {/* DYNAMIC STATUS BADGE */}
                 <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-extrabold border ${
                   isOnline 
-                    ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.3)]' 
-                    : 'bg-red-500/20 text-red-400 border-red-500/40 animate-pulse'
+                    ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.3)]' 
+                    : 'bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/40 animate-pulse'
                 }`}>
-                  <span className={`relative flex h-2 w-2 rounded-full ${isOnline ? 'bg-emerald-400' : 'bg-red-400'}`}>
+                  <span className={`relative flex h-2 w-2 rounded-full ${isOnline ? 'bg-emerald-500 dark:bg-emerald-400' : 'bg-red-500 dark:bg-red-400'}`}>
                     {isOnline && (
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     )}
@@ -139,22 +219,17 @@ export default function SettingsPage() {
                   <span>FASTAPI SERVER STATUS: {isOnline ? 'ONLINE' : 'OFFLINE'}</span>
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mt-0.5 font-mono">
-                Target Backend: <strong className="text-sky-400">http://localhost:8000/api</strong>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Real-time heartbeat monitoring FastAPI endpoints, SQLAlchemy connection pool, and APScheduler background tasks.
               </p>
             </div>
           </div>
 
-          {/* Test Ping Button */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button
               onClick={handleTestPing}
               disabled={isPinging}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-bold font-mono transition-all shadow-md active:scale-95 ${
-                isPinging 
-                  ? 'bg-slate-800 text-slate-400 cursor-not-allowed'
-                  : 'bg-sky-500 hover:bg-sky-400 text-slate-950 shadow-glow-sky'
-              }`}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-900 font-bold text-xs font-mono shadow-md transition-all active:scale-95 disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isPinging ? 'animate-spin' : ''}`} />
               <span>{isPinging ? 'Probing /health...' : 'Test Ping /health'}</span>
@@ -164,36 +239,36 @@ export default function SettingsPage() {
 
         {/* Live Diagnostics Metrics Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
-          <div className="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800/80">
+          <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800/80 transition-colors">
             <span className="text-slate-500 text-[10px] block uppercase">REST API Status</span>
-            <span className={`text-sm font-bold flex items-center gap-1.5 mt-0.5 ${isOnline ? 'text-emerald-400' : 'text-red-400'}`}>
+            <span className={`text-sm font-bold flex items-center gap-1.5 mt-0.5 ${isOnline ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
               {isOnline ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
               {health?.api === 'online' ? 'online (HTTP 200)' : (isOnline ? 'online' : 'offline')}
             </span>
             <span className="text-[10px] text-slate-500 block mt-0.5">Port 8000 • FastAPI</span>
           </div>
 
-          <div className="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800/80">
+          <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800/80 transition-colors">
             <span className="text-slate-500 text-[10px] block uppercase">Database Link</span>
-            <span className={`text-sm font-bold flex items-center gap-1.5 mt-0.5 ${health?.database === 'connected' || health?.database_connected ? 'text-emerald-400' : 'text-amber-400'}`}>
-              <Database className="w-4 h-4 text-sky-400" />
+            <span className={`text-sm font-bold flex items-center gap-1.5 mt-0.5 ${health?.database === 'connected' || health?.database_connected ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
+              <Database className="w-4 h-4 text-sky-500 dark:text-sky-400" />
               {health?.database || (health?.database_connected ? 'connected' : 'disconnected')}
             </span>
             <span className="text-[10px] text-slate-500 block mt-0.5">PostgreSQL / SQLite</span>
           </div>
 
-          <div className="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800/80">
+          <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800/80 transition-colors">
             <span className="text-slate-500 text-[10px] block uppercase">Scheduler Worker</span>
-            <span className="text-sm font-bold text-purple-400 flex items-center gap-1.5 mt-0.5">
+            <span className="text-sm font-bold text-purple-600 dark:text-purple-400 flex items-center gap-1.5 mt-0.5">
               <Cpu className="w-4 h-4" />
               {health?.scheduler_running ? 'running' : 'active (4 jobs)'}
             </span>
             <span className="text-[10px] text-slate-500 block mt-0.5">APScheduler Background</span>
           </div>
 
-          <div className="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800/80">
+          <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800/80 transition-colors">
             <span className="text-slate-500 text-[10px] block uppercase">Telemetry Sync</span>
-            <span className="text-sm font-bold text-sky-400 flex items-center gap-1.5 mt-0.5">
+            <span className="text-sm font-bold text-sky-600 dark:text-sky-400 flex items-center gap-1.5 mt-0.5">
               <Wifi className="w-4 h-4" />
               Auto-Polling (4s)
             </span>
@@ -205,11 +280,11 @@ export default function SettingsPage() {
         {pingResult && (
           <div className={`p-3.5 rounded-2xl border text-xs font-mono flex items-center justify-between ${
             pingResult.success 
-              ? 'bg-emerald-950/40 text-emerald-300 border-emerald-500/40' 
-              : 'bg-red-950/40 text-red-300 border-red-500/40'
+              ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-500/40' 
+              : 'bg-red-50 dark:bg-red-950/40 text-red-800 dark:text-red-300 border-red-300 dark:border-red-500/40'
           }`}>
             <div className="flex items-center gap-2">
-              {pingResult.success ? <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> : <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />}
+              {pingResult.success ? <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> : <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />}
               <span>
                 {pingResult.success 
                   ? `Probe Succeeded: /health returned HTTP 200 (Latency: ${pingResult.latency}ms) at ${pingResult.timestamp}`
@@ -217,7 +292,7 @@ export default function SettingsPage() {
               </span>
             </div>
             {pingResult.success && (
-              <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">
+              <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-bold">
                 VERIFIED 200 OK
               </span>
             )}
@@ -225,16 +300,16 @@ export default function SettingsPage() {
         )}
       </div>
 
-      {/* System Health Matrix (Original UI Preserved) */}
-      <div className="p-6 rounded-3xl glass-panel border border-slate-800 space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+      {/* System Health Matrix */}
+      <div className="p-6 rounded-3xl glass-panel border border-slate-200 dark:border-slate-800 space-y-4 transition-colors">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
           <div className="flex items-center gap-2">
-            <Activity className="w-4 h-4 text-sky-400" />
-            <h3 className="text-sm font-bold text-slate-100">Infrastructure Service Mesh</h3>
+            <Activity className="w-4 h-4 text-sky-500 dark:text-sky-400" />
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">Infrastructure Service Mesh</h3>
           </div>
-          <span className="text-[11px] font-mono text-emerald-400 flex items-center gap-1.5">
+          <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
             <span className="relative flex h-2 w-2">
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
             GET /health Responsive
           </span>
@@ -242,40 +317,40 @@ export default function SettingsPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
           
-          <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-1">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 space-y-1">
             <span className="text-slate-500 text-[10px] block">Database Engine:</span>
-            <span className="text-base font-bold text-slate-100 flex items-center gap-2">
-              <Database className="w-4 h-4 text-sky-400" />
+            <span className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <Database className="w-4 h-4 text-sky-500 dark:text-sky-400" />
               {health?.database === 'connected' || health?.database_connected ? "Connected (SQLAlchemy)" : "Local In-Memory Cache"}
             </span>
-            <span className="text-[10px] text-emerald-400 block">36 Airports • 160 Routes</span>
+            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 block">36 Airports • 160 Routes</span>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-1">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 space-y-1">
             <span className="text-slate-500 text-[10px] block">Scheduler Daemon:</span>
-            <span className="text-base font-bold text-slate-100 flex items-center gap-2">
-              <Cpu className="w-4 h-4 text-purple-400" />
+            <span className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <Cpu className="w-4 h-4 text-purple-600 dark:text-purple-400" />
               {health?.scheduler_running ? "Running (APScheduler)" : "Active Background Worker"}
             </span>
-            <span className="text-[10px] text-purple-400 block">4 Standing Cron Jobs</span>
+            <span className="text-[10px] text-purple-600 dark:text-purple-400 block">4 Standing Cron Jobs</span>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-1">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 space-y-1">
             <span className="text-slate-500 text-[10px] block">Carrier Pipeline:</span>
-            <span className="text-base font-bold text-slate-100 flex items-center gap-2">
-              <Radio className="w-4 h-4 text-amber-400" />
+            <span className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <Radio className="w-4 h-4 text-amber-600 dark:text-amber-400" />
               {health?.providers_ready ? "5 Providers Ready" : "Simulated Ready"}
             </span>
-            <span className="text-[10px] text-amber-400 block">6E, AI, IX, QP, SG</span>
+            <span className="text-[10px] text-amber-600 dark:text-amber-400 block">6E, AI, IX, QP, SG</span>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-1">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 space-y-1">
             <span className="text-slate-500 text-[10px] block">Platform Core Version:</span>
-            <span className="text-base font-bold text-slate-100 flex items-center gap-2">
-              <Shield className="w-4 h-4 text-emerald-400" />
+            <span className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <Shield className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
               v1.0.4-prod
             </span>
-            <span className="text-[10px] text-slate-400 block">FastAPI + Vite React</span>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 block">FastAPI + Vite React</span>
           </div>
 
         </div>
@@ -284,17 +359,17 @@ export default function SettingsPage() {
       {/* Model Parameters & Tuning Form */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        <div className="p-6 rounded-3xl glass-panel border border-slate-800 space-y-5">
-          <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-            <SlidersHorizontal className="w-4 h-4 text-sky-400" />
-            <h3 className="text-sm font-bold text-slate-100">APIx Econometric Baseline Parameters</h3>
+        <div className="p-6 rounded-3xl glass-panel border border-slate-200 dark:border-slate-800 space-y-5 transition-colors">
+          <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+            <SlidersHorizontal className="w-4 h-4 text-sky-500 dark:text-sky-400" />
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">APIx Econometric Baseline Parameters</h3>
           </div>
 
           <div className="space-y-4 text-xs">
             <div>
               <div className="flex justify-between mb-1.5 font-mono">
-                <span className="text-slate-300">Baseline Distance Rate (₹ / km):</span>
-                <span className="text-sky-400 font-bold">₹{baseRate.toFixed(2)}</span>
+                <span className="text-slate-700 dark:text-slate-300">Baseline Distance Rate (₹ / km):</span>
+                <span className="text-sky-600 dark:text-sky-400 font-bold">₹{baseRate.toFixed(2)}</span>
               </div>
               <input
                 type="range"
@@ -303,7 +378,7 @@ export default function SettingsPage() {
                 step="0.10"
                 value={baseRate}
                 onChange={(e) => setBaseRate(parseFloat(e.target.value))}
-                className="w-full accent-sky-400 cursor-pointer"
+                className="w-full accent-sky-500 cursor-pointer"
               />
               <span className="text-[10px] text-slate-500 block mt-1">
                 Standard nominal benchmark used to normalize index score to 100.0.
@@ -312,13 +387,13 @@ export default function SettingsPage() {
 
             <div>
               <div className="flex justify-between mb-1.5 font-mono">
-                <span className="text-slate-300">Background Telemetry Poll Cadence:</span>
-                <span className="text-sky-400 font-bold">{refreshInterval} seconds</span>
+                <span className="text-slate-700 dark:text-slate-300">Background Telemetry Poll Cadence:</span>
+                <span className="text-sky-600 dark:text-sky-400 font-bold">{refreshInterval} seconds</span>
               </div>
               <select
                 value={refreshInterval}
                 onChange={(e) => setRefreshInterval(parseInt(e.target.value))}
-                className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 focus:outline-none"
+                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:outline-none transition-colors"
               >
                 <option value={15}>15 seconds (High Frequency Trading)</option>
                 <option value={30}>30 seconds (Standard Rapid)</option>
@@ -338,47 +413,47 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <div className="p-6 rounded-3xl glass-panel border border-slate-800 space-y-4">
-          <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-            <RefreshCw className="w-4 h-4 text-emerald-400" />
-            <h3 className="text-sm font-bold text-slate-100">Engine Operations & Pipeline Controls</h3>
+        <div className="p-6 rounded-3xl glass-panel border border-slate-200 dark:border-slate-800 space-y-4 transition-colors">
+          <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+            <RefreshCw className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">Engine Operations & Pipeline Controls</h3>
           </div>
 
           <div className="space-y-3 text-xs font-mono">
-            <div className="p-3 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
+            <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <span className="font-bold text-slate-200 block">Recalculate APIx Indices</span>
+                <span className="font-bold text-slate-800 dark:text-slate-200 block">Recalculate APIx Indices</span>
                 <span className="text-[10px] text-slate-500">Triggers calculate_daily_apix() across all 160 routes</span>
               </div>
               <button 
                 onClick={handleSave}
-                className="px-3 py-1.5 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-500/30 hover:bg-sky-500/30 font-bold text-[11px]"
+                className="px-3 py-1.5 rounded-lg bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 hover:bg-sky-500/30 font-bold text-[11px]"
               >
                 Execute Now
               </button>
             </div>
 
-            <div className="p-3 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
+            <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <span className="font-bold text-slate-200 block">Execute Provider Scrape Cycle</span>
+                <span className="font-bold text-slate-800 dark:text-slate-200 block">Execute Provider Scrape Cycle</span>
                 <span className="text-[10px] text-slate-500">Collects fresh tariffs from 6E, AI, IX, QP, SG providers</span>
               </div>
               <button 
                 onClick={handleSave}
-                className="px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500/30 font-bold text-[11px]"
+                className="px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 hover:bg-amber-500/30 font-bold text-[11px]"
               >
                 Trigger Cycle
               </button>
             </div>
 
-            <div className="p-3 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
+            <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <span className="font-bold text-slate-200 block">Audit Festival Spike Calendar</span>
+                <span className="font-bold text-slate-800 dark:text-slate-200 block">Audit Festival Spike Calendar</span>
                 <span className="text-[10px] text-slate-500">Verifies next 35 days festival surge multipliers</span>
               </div>
               <button 
                 onClick={handleSave}
-                className="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 font-bold text-[11px]"
+                className="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 font-bold text-[11px]"
               >
                 Audit Dates
               </button>

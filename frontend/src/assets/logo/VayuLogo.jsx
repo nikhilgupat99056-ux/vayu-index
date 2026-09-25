@@ -122,15 +122,15 @@ export default function VayuLogo({ size = 42, showText = true, textClass = '', s
       {showText && (
         <div className="flex flex-col">
           <div className="flex items-center gap-1.5 leading-none">
-            <span className="font-extrabold tracking-wider text-xl sm:text-2xl bg-gradient-to-r from-amber-400 via-white to-sky-400 bg-clip-text text-transparent">
+            <span className="font-extrabold tracking-wider text-xl sm:text-2xl bg-gradient-to-r from-amber-500 via-slate-800 to-sky-600 dark:from-amber-400 dark:via-white dark:to-sky-400 bg-clip-text text-transparent">
               VAYU
             </span>
-            <span className="font-bold text-xs uppercase px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30 tracking-widest">
+            <span className="font-bold text-xs uppercase px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 tracking-widest">
               INDEX
             </span>
           </div>
           {subtitle && (
-            <span className="text-[10px] text-slate-400 tracking-tight font-medium mt-1">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 tracking-tight font-medium mt-1">
               India's Real-Time Airfare Intelligence Platform
             </span>
           )}
