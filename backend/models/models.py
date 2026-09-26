@@ -432,3 +432,278 @@ class FareDiscount(Base):
             "is_festival": self.is_festival,
             "created_at": str(self.created_at),
         }
+
+
+# ============================================================================
+# VAYU-Index v3.0: USER, AUTHENTICATION & NOTIFICATION MODELS
+# ============================================================================
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(120), nullable=True, default="Arjun Verma")
+    email = Column(String(120), unique=True, index=True, nullable=False)
+    hashed_password = Column(String(255), nullable=False)
+    mobile = Column(String(30), nullable=True, default="+91 98765 43210")
+    home_airport = Column(String(10), default="DEL")
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    preferences = relationship("UserPreference", back_populates="user", uselist=False, cascade="all, delete-orphan")
+    saved_routes = relationship("SavedRoute", back_populates="user", cascade="all, delete-orphan")
+    saved_searches = relationship("SavedSearch", back_populates="user", cascade="all, delete-orphan")
+    card_preferences = relationship("CardPreference", back_populates="user", cascade="all, delete-orphan")
+    price_alerts = relationship("PriceAlert", back_populates="user", cascade="all, delete-orphan")
+    notifications = relationship("Notification", back_populates="user", cascade="all, delete-orphan")
+    trip_history = relationship("TripHistory", back_populates="user", cascade="all, delete-orphan")
+
+    @property
+    def full_name(self):
+        return self.name or "VAYU Traveler"
+
+    def to_dict(self, include_sensitive=False):
+        data = {
+            "id": self.id,
+            "name": self.name or "Arjun Verma",
+            "full_name": self.name or "Arjun Verma",
+            "email": self.email,
+            "mobile": self.mobile or "+91 98765 43210",
+            "home_airport": self.home_airport or "DEL",
+            "is_active": self.is_active,
+            "created_at": str(self.created_at),
+        }
+        if self.preferences:
+            data["preferences"] = self.preferences.to_dict()
+        else:
+            data["preferences"] = {
+                "preferred_airlines": ["6E", "AI", "QP"],
+                "cabin_class": "Economy",
+                "notification_preferences": {"push": True, "email": True, "in_app": True},
+                "card_preferences": ["SBI Cashback", "Axis Atlas"],
+            }
+        return data
+
+
+class UserPreference(Base):
+    __tablename__ = "user_preferences"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False, index=True)
+    preferred_airlines = Column(String(100), default="6E,AI")
+    cabin_class = Column(String(30), default="Economy")
+    email_notifications = Column(Boolean, default=True)
+    push_notifications = Column(Boolean, default=True)
+    in_app_notifications = Column(Boolean, default=True)
+    fare_drop_threshold_pct = Column(Float, default=12.0)
+    updated_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="preferences")
+
+    def to_dict(self):
+        p_airlines = [a.strip() for a in self.preferred_airlines.split(",")] if self.preferred_airlines else ["6E", "AI"]
+        return {
+            "preferred_airlines": p_airlines,
+            "cabin_class": self.cabin_class or "Economy",
+            "notification_preferences": {
+                "email": bool(self.email_notifications),
+                "push": bool(self.push_notifications),
+                "in_app": bool(self.in_app_notifications),
+            },
+            "card_preferences": ["SBI Cashback", "Axis Atlas"],
+            "fare_drop_threshold_pct": self.fare_drop_threshold_pct or 12.0,
+        }
+
+
+class SavedRoute(Base):
+    __tablename__ = "saved_routes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    route_id = Column(Integer, ForeignKey("routes.id"), nullable=True)
+    origin_iata = Column(String(10), nullable=False)
+    destination_iata = Column(String(10), nullable=False)
+    target_budget = Column(Float, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="saved_routes")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "route_id": self.route_id,
+            "route_key": f"{self.origin_iata}-{self.destination_iata}",
+            "origin_iata": self.origin_iata,
+            "destination_iata": self.destination_iata,
+            "target_budget": self.target_budget,
+            "target_fare": self.target_budget,
+            "created_at": str(self.created_at),
+        }
+
+
+class SavedSearch(Base):
+    __tablename__ = "saved_searches"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    origin_iata = Column(String(10), nullable=False)
+    destination_iata = Column(String(10), nullable=False)
+    travel_date = Column(String(30), nullable=True)
+    flexible_days = Column(Integer, default=3)
+    budget = Column(Float, nullable=True)
+    preferred_airline = Column(String(50), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="saved_searches")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "origin": self.origin_iata,
+            "destination": self.destination_iata,
+            "travel_date": self.travel_date,
+            "flexible_days": self.flexible_days,
+            "budget": self.budget,
+            "preferred_airline": self.preferred_airline,
+            "created_at": str(self.created_at),
+        }
+
+
+class CardPreference(Base):
+    __tablename__ = "card_preferences"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    card_id = Column(Integer, ForeignKey("credit_cards.id"), nullable=True)
+    card_name = Column(String(100), nullable=False)
+    is_primary = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="card_preferences")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "card_id": self.card_id,
+            "card_name": self.card_name,
+            "is_primary": self.is_primary,
+            "created_at": str(self.created_at),
+        }
+
+
+class PriceAlert(Base):
+    __tablename__ = "price_alerts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    origin_iata = Column(String(10), nullable=False)
+    destination_iata = Column(String(10), nullable=False)
+    target_price = Column(Float, nullable=False)
+    alert_type = Column(String(30), default="FARE_DROP")
+    channel = Column(String(30), default="ALL")
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="price_alerts")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "route_key": f"{self.origin_iata}-{self.destination_iata}",
+            "origin_iata": self.origin_iata,
+            "destination_iata": self.destination_iata,
+            "target_price": self.target_price,
+            "alert_type": self.alert_type,
+            "channel": self.channel,
+            "is_active": self.is_active,
+            "created_at": str(self.created_at),
+        }
+
+
+class Notification(Base):
+    __tablename__ = "notifications"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    title = Column(String(150), nullable=False)
+    message = Column(Text, nullable=False)
+    alert_type = Column(String(50), default="FARE_DROP")
+    route_key = Column(String(20), nullable=True)
+    old_price = Column(Float, nullable=True)
+    new_price = Column(Float, nullable=True)
+    savings = Column(Float, default=0.0)
+    is_read = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="notifications")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "title": self.title,
+            "message": self.message,
+            "type": self.alert_type.lower() if self.alert_type else "fare_drop",
+            "alert_type": self.alert_type,
+            "route_key": self.route_key,
+            "old_price": self.old_price,
+            "new_price": self.new_price,
+            "savings": self.savings,
+            "is_read": bool(self.is_read),
+            "created_at": str(self.created_at),
+        }
+
+
+class TripHistory(Base):
+    __tablename__ = "trip_history"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    pnr_ref = Column(String(30), nullable=False)
+    origin_iata = Column(String(10), nullable=False)
+    destination_iata = Column(String(10), nullable=False)
+    airline = Column(String(50), nullable=False)
+    flight_number = Column(String(30), nullable=False)
+    departure_time = Column(String(30), nullable=True)
+    arrival_time = Column(String(30), nullable=True)
+    fare_paid = Column(Float, nullable=False)
+    savings = Column(Float, default=0.0)
+    booking_date = Column(String(30), nullable=True)
+    travel_date = Column(String(30), nullable=True)
+    passengers_count = Column(Integer, default=1)
+    cabin_class = Column(String(30), default="Economy")
+    status = Column(String(30), default="CONFIRMED")
+
+    user = relationship("User", back_populates="trip_history")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "pnr_ref": self.pnr_ref,
+            "booking_ref": self.pnr_ref,
+            "origin_iata": self.origin_iata,
+            "destination_iata": self.destination_iata,
+            "route_key": f"{self.origin_iata}-{self.destination_iata}",
+            "airline": self.airline,
+            "flight_number": self.flight_number,
+            "departure_time": self.departure_time or "06:15",
+            "arrival_time": self.arrival_time or "08:35",
+            "fare_paid": self.fare_paid,
+            "final_fare": self.fare_paid,
+            "savings": self.savings,
+            "booking_date": self.booking_date or str(date.today()),
+            "departure_date": self.travel_date or str(date.today() + timedelta(days=20)),
+            "travel_date": self.travel_date,
+            "passengers_count": self.passengers_count,
+            "cabin_class": self.cabin_class,
+            "status": self.status,
+        }
+
+

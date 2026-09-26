@@ -157,10 +157,11 @@ export default function FestivalPage() {
     // 1. Process recommended_routes from authoritative specs
     recCorridors.forEach((recKey) => {
       const parsed = parseRouteKey(recKey);
-      if (!parsed) return;
-      const { origin, destination } = parsed;
+      if (!parsed || !parsed.originIata || !parsed.destinationIata) return;
+      const origin = parsed.originIata;
+      const destination = parsed.destinationIata;
 
-      if (!isValidFestivalRoute(origin, destination, destAirports, targetStates)) return;
+      if (!isValidFestivalRoute(recKey, currentFestival, airportLookup)) return;
 
       const normKey = `${origin}-${destination}`;
       if (addedKeys.has(normKey)) return;
@@ -214,7 +215,7 @@ export default function FestivalPage() {
       const normKey = `${orig}-${dest}`;
 
       if (addedKeys.has(normKey)) return;
-      if (!isValidFestivalRoute(orig, dest, destAirports, targetStates)) return;
+      if (!isValidFestivalRoute(r, currentFestival, airportLookup)) return;
 
       if (srcAirports.length > 0 && !srcAirports.includes(orig)) return;
 
@@ -255,8 +256,23 @@ export default function FestivalPage() {
       });
     });
 
+    // 3. Fallback to backend top_surge_routes if present and matches festival
+    if (data?.top_surge_routes && data.top_surge_routes.length > 0) {
+      data.top_surge_routes.forEach(sr => {
+        const orig = sr.origin || sr.origin_iata;
+        const dest = sr.destination || sr.destination_iata;
+        const normKey = `${orig}-${dest}`;
+        if (!orig || !dest || addedKeys.has(normKey)) return;
+
+        if (isValidFestivalRoute(sr, currentFestival, airportLookup)) {
+          addedKeys.add(normKey);
+          verified.push(sr);
+        }
+      });
+    }
+
     return verified.sort((a, b) => b.avg_fare - a.avg_fare);
-  }, [currentFestival, allRoutes, airportLookup]);
+  }, [currentFestival, allRoutes, airportLookup, data]);
 
   // Construct map corridors for IndiaRouteMap
   const mapCorridors = useMemo(() => {
@@ -369,7 +385,7 @@ export default function FestivalPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Left Column: Festival Calendar Selector */}
-        <div className="lg:col-span-1 p-5 rounded-3xl glass-panel border border-slate-200 dark:border-slate-800 space-y-4">
+        <div className="lg:col-span-1 p-5 rounded-3xl glass-panel border border-slate-200 dark:border-slate-800 space-y-4 lg:sticky lg:top-24 lg:self-start">
           <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4 text-sky-500 dark:text-sky-400" />
@@ -586,10 +602,15 @@ export default function FestivalPage() {
               </span>
             </div>
 
-            {verifiedFestivalRoutes.length === 0 ? (
+            {loading ? (
               <div className="p-8 text-center rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
                 <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto" />
                 <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">Synchronizing verified flight corridors...</p>
+              </div>
+            ) : verifiedFestivalRoutes.length === 0 ? (
+              <div className="p-8 text-center rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">No verified corridors found for {currentFestival?.festival_name || currentFestival?.name || 'this festival'}.</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Strict destination state validation excludes non-inbound sectors.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

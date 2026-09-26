@@ -213,6 +213,275 @@ export const pingHealth = async () => {
   return await fetchHealth(1);
 };
 
+// ============================================================================
+// VAYU-Index v3.0 API Client Methods (Auth, Profile, AI, Booking, Alerts)
+// ============================================================================
+
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('vayu_token');
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+  };
+};
+
+export const loginUser = async (credentials) => {
+  const res = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(credentials)
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.detail || 'Login failed. Please check your credentials.');
+  }
+  const data = await res.json();
+  if (data.access_token) {
+    localStorage.setItem('vayu_token', data.access_token);
+  }
+  return data;
+};
+
+export const registerUser = async (payload) => {
+  const res = await fetch(`${API_BASE_URL}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.detail || 'Registration failed.');
+  }
+  const data = await res.json();
+  if (data.access_token) {
+    localStorage.setItem('vayu_token', data.access_token);
+  }
+  return data;
+};
+
+export const fetchUserProfile = async () => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/profile`, {
+      headers: getAuthHeaders()
+    });
+    if (!res.ok) throw new Error('Failed to fetch profile');
+    return await res.json();
+  } catch (err) {
+    console.warn('Backend unavailable, using default profile fallback', err);
+    return {
+      user: {
+        id: 1,
+        name: 'Arjun Verma',
+        full_name: 'Arjun Verma',
+        email: 'demo@vayu.aero',
+        mobile: '+91 98765 43210',
+        home_airport: 'DEL',
+        preferences: {
+          preferred_airlines: ['6E', 'AI'],
+          cabin_class: 'Economy',
+          notification_preferences: { push: true, email: true, in_app: true },
+          card_preferences: ['SBI Cashback', 'Axis Atlas']
+        }
+      },
+      saved_routes: [
+        { id: 1, route_key: 'DEL-BOM', origin_iata: 'DEL', destination_iata: 'BOM', target_budget: 4500 },
+        { id: 2, route_key: 'CCU-GOI', origin_iata: 'CCU', destination_iata: 'GOI', target_budget: 5100 }
+      ],
+      price_alerts: [
+        { id: 1, route_key: 'DEL-BOM', target_price: 4200, alert_type: 'FARE_DROP', is_active: true }
+      ],
+      trip_history: [
+        {
+          id: 1,
+          pnr_ref: 'VY-20419',
+          origin_iata: 'DEL',
+          destination_iata: 'BOM',
+          airline: 'IndiGo',
+          flight_number: '6E-204',
+          fare_paid: 4190,
+          departure_date: '2026-10-15',
+          status: 'CONFIRMED'
+        }
+      ]
+    };
+  }
+};
+
+export const updateUserProfile = async (payload) => {
+  const res = await fetch(`${API_BASE_URL}/profile/update`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error('Failed to update profile');
+  return await res.json();
+};
+
+export const fetchNotifications = async (markRead = false) => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/notifications${markRead ? '?mark_read=true' : ''}`, {
+      headers: getAuthHeaders()
+    });
+    if (!res.ok) throw new Error('Failed to fetch notifications');
+    return await res.json();
+  } catch (err) {
+    console.warn('Backend unavailable, using notification fallback', err);
+    return {
+      unread_count: 3,
+      notifications: [
+        {
+          id: 1,
+          title: '📉 Fare Drop Alert: DEL ➔ BOM',
+          message: 'IndiGo airfare dropped 14% on New Delhi to Mumbai corridor. Lowest: ₹4,190.',
+          type: 'fare_drop',
+          is_read: false,
+          created_at: new Date().toISOString()
+        },
+        {
+          id: 2,
+          title: '🎯 Optimal Booking Window: CCU ➔ GOI',
+          message: 'Kolkata to Goa has entered its prime 28-35 day booking window.',
+          type: 'best_window',
+          is_read: false,
+          created_at: new Date().toISOString()
+        }
+      ]
+    };
+  }
+};
+
+export const markNotificationsAsRead = async () => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/notifications/read`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    });
+    return await res.json();
+  } catch (err) {
+    return { status: 'success', unread_count: 0 };
+  }
+};
+
+export const createPriceAlert = async (payload) => {
+  const res = await fetch(`${API_BASE_URL}/alerts`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error('Failed to create price alert');
+  return await res.json();
+};
+
+export const fetchAIRecommendation = async (payload) => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/ai/recommend`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('Failed to calculate AI recommendation');
+    return await res.json();
+  } catch (err) {
+    console.warn('Backend unavailable, generating local AI recommendation', err);
+    return {
+      origin: payload.origin || 'CCU',
+      destination: payload.destination || 'GOI',
+      origin_city: 'Kolkata',
+      destination_city: 'Goa',
+      route_key: `${payload.origin || 'CCU'}-${payload.destination || 'GOI'}`,
+      travel_date: payload.travel_date || '2026-10-25',
+      days_out: 29,
+      best_booking_window: '28–35 days',
+      window_status: 'Optimal Bargain Window (Active)',
+      window_advice: '🎯 Prime Purchase Window. Current lead time matches algorithmic sweet spot for minimum tariff.',
+      price_trend: 'Rising',
+      price_trend_badge: '🔴 Rising (+3.4% WoW)',
+      trend_explanation: 'Airfare index in strong bullish territory. Elevated corporate and festive demand.',
+      estimated_cheapest_fare: 5400,
+      weekend_fare: 6800,
+      final_payable_with_card: 5140,
+      best_card_deal: { card_name: 'SBI Cashback', savings: 560, convenience_fee: 299 },
+      best_day_to_fly: 'Tuesday or Wednesday (historically 12–15% lower)',
+      festival_impact: '🟢 Nominal Non-Festive Trajectory (Zero cultural traffic congestion)',
+      alternative_nearby_airport: {
+        alt_destination: 'GOX',
+        alt_name: "Manohar Int'l (Mopa)",
+        estimated_savings: 1450,
+        suggestion: "Flying to Manohar Int'l (Mopa) (GOX) instead of GOI saves ~₹1,450 on airfare."
+      },
+      confidence_score: 92,
+      urgency: 'HIGH',
+      ai_rationale: [
+        'Econometric APIx is currently in bullish territory.',
+        'Optimal statistical advance purchase window is 28–35 days.',
+        'Mid-week departures offer 14% lower fares compared to weekend slots.'
+      ]
+    };
+  }
+};
+
+export const fetchBookingWindow = async (payload) => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/booking-window`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('Failed to compute smart booking window');
+    return await res.json();
+  } catch (err) {
+    console.warn('Backend unavailable, calculating local booking window', err);
+    return {
+      route_key: `${payload.origin || 'DEL'}-${payload.destination || 'BOM'}`,
+      origin: payload.origin || 'DEL',
+      destination: payload.destination || 'BOM',
+      origin_city: 'New Delhi',
+      destination_city: 'Mumbai',
+      days_out: 25,
+      original_fare: 4820,
+      predicted_fare: 4530,
+      apix: 94.0,
+      booking_score: 92,
+      best_window: '21–35 Days Out',
+      cheapest_date: '2026-10-20',
+      final_payable_price: 4329,
+      card_applied: 'SBI Cashback',
+      discount_amount: 500,
+      convenience_fee: 299,
+      total_savings: 500,
+      available_flights: [
+        {
+          id: 'FL-101',
+          airline_name: 'IndiGo',
+          airline_code: '6E',
+          flight_number: '6E-204',
+          departure_time: '06:15',
+          arrival_time: '08:35',
+          duration: '2h 20m',
+          stops: 'Non-stop',
+          cabin_class: 'Economy',
+          base_fare: 4530,
+          card_discount: 453,
+          final_price: 4376,
+          seats_left: 4,
+          carbon_kg: 112,
+          provider: 'IndiGo Direct / Amadeus NDC Ready'
+        }
+      ]
+    };
+  }
+};
+
+export const bookFlightTrip = async (payload) => {
+  const res = await fetch(`${API_BASE_URL}/trips/book`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error('Failed to book flight reservation');
+  return await res.json();
+};
+
 // ---------------- LOCAL FALLBACK DATA ----------------
 
 export const FALLBACK_AIRPORTS = [

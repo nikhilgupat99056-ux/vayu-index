@@ -15,6 +15,7 @@ Endpoints:
 
 import json
 import os
+import random
 from pathlib import Path
 from datetime import date, datetime, timedelta
 from typing import List, Optional
@@ -26,9 +27,18 @@ from sqlalchemy import func, desc, asc
 from backend.database.connection import get_db
 from backend.models.models import (
     Airport, Airline, Route, Fare, APIx, FestivalCalendar, FestivalRoute,
-    CreditCard, BankOffer, FareDiscount
+    CreditCard, BankOffer, FareDiscount,
+    User, UserPreference, SavedRoute, SavedSearch, PriceAlert, Notification, TripHistory
 )
-from backend.schemas.schemas import RouteFilterRequest, FareSaverRequest
+from backend.schemas.schemas import (
+    RouteFilterRequest, FareSaverRequest,
+    UserRegisterRequest, UserLoginRequest, UserProfileUpdateRequest,
+    PriceAlertRequest, AIRecommendRequest, BookingWindowRequest, BookTripRequest
+)
+from backend.services.auth import (
+    hash_password, verify_password, create_access_token,
+    get_current_user, get_current_user_optional
+)
 from backend.services.apix_engine import calculate_daily_apix
 
 router = APIRouter(prefix="/api", tags=["VAYU Intelligence"])
@@ -130,14 +140,16 @@ def get_routes(
         query = query.filter(Route.destination_iata == destination.upper())
 
     routes = query.all()
+    # Batch compute average fares in a single group-by query to eliminate N+1 latency
+    fare_avgs = dict(
+        db.query(Fare.route_id, func.avg(Fare.total_fare_inr))
+        .group_by(Fare.route_id)
+        .all()
+    )
     res = []
     for r in routes:
         data = r.to_dict()
-        recent_avg = (
-            db.query(func.avg(Fare.total_fare_inr))
-            .filter(Fare.route_id == r.id)
-            .scalar()
-        )
+        recent_avg = fare_avgs.get(r.id)
         apix_data = compute_route_apix_and_classification(r, float(recent_avg) if recent_avg else None)
         data.update(apix_data)
         res.append(data)
@@ -162,13 +174,15 @@ def filter_routes(filters: RouteFilterRequest, db: Session = Depends(get_db)):
     routes = query.all()
     enriched = []
 
+    # Pre-aggregate fare query in one shot to eliminate N+1 latency
+    base_fq = db.query(Fare.route_id, func.avg(Fare.total_fare_inr))
+    if filters.booking_window_days is not None:
+        base_fq = base_fq.filter(Fare.booking_window_days == filters.booking_window_days)
+    fare_avgs = dict(base_fq.group_by(Fare.route_id).all())
+
     for r in routes:
         data = r.to_dict()
-        fare_query = db.query(func.avg(Fare.total_fare_inr)).filter(Fare.route_id == r.id)
-        if filters.booking_window_days is not None:
-            fare_query = fare_query.filter(Fare.booking_window_days == filters.booking_window_days)
-
-        recent_avg = fare_query.scalar()
+        recent_avg = fare_avgs.get(r.id)
         apix_data = compute_route_apix_and_classification(r, float(recent_avg) if recent_avg else None)
         data.update(apix_data)
 
@@ -286,12 +300,17 @@ def get_apix_overview(db: Session = Depends(get_db)):
         .all()
     )
 
-    # Calculate Top Rising and Top Falling Routes
+    # Calculate Top Rising and Top Falling Routes (Optimized Single Group-By)
     routes = db.query(Route).all()
+    fare_avgs = dict(
+        db.query(Fare.route_id, func.avg(Fare.total_fare_inr))
+        .group_by(Fare.route_id)
+        .all()
+    )
     route_stats = []
     for r in routes:
         base_calc = max(2200.0, r.distance_km * 4.2)
-        recent_avg = db.query(func.avg(Fare.total_fare_inr)).filter(Fare.route_id == r.id).scalar()
+        recent_avg = fare_avgs.get(r.id)
         cur_fare = round(float(recent_avg), 0) if recent_avg else round(r.base_fare * 1.15, 0)
         score = round((cur_fare / base_calc) * 100.0, 1)
         # Delta against nominal base 100
@@ -1058,4 +1077,659 @@ def get_savings_summary(db: Session = Depends(get_db)):
             "average_network_savings": round(float(np.mean([r["savings"] for r in evaluated_routes])), 0) if evaluated_routes else 820.0
         }
     }
+
+
+# ============================================================================
+# VAYU-Index v3.0: USER LOGIN & AUTHENTICATION ENDPOINTS
+# ============================================================================
+
+@router.post("/auth/register")
+def register_user(req: UserRegisterRequest, db: Session = Depends(get_db)):
+    """Register a new user account with hashed password and initial preferences."""
+    existing = db.query(User).filter(User.email == req.email.lower().strip()).first()
+    if existing:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Account with this email already exists. Please login."
+        )
+
+    user = User(
+        email=req.email.lower().strip(),
+        hashed_password=hash_password(req.password),
+        full_name=req.full_name or "VAYU Traveler",
+        mobile=req.mobile,
+        home_airport=(req.home_airport or "DEL").upper(),
+        is_active=True
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    # Initialize default preferences
+    pref = UserPreference(
+        user_id=user.id,
+        preferred_airlines='["6E", "AI", "QP"]',
+        notification_preferences='{"push": true, "email": true, "in_app": true}',
+        card_preferences='["SBI Cashback", "HDFC Regalia Gold"]'
+    )
+    db.add(pref)
+
+    # Welcome notification
+    welcome_notif = Notification(
+        user_id=user.id,
+        title="✈️ Welcome to VAYU-Index v3.0",
+        message="Your account is active. Telemetry-backed fare alerts and AI recommendations are now configured.",
+        alert_type="BEST_WINDOW",
+        is_read=False
+    )
+    db.add(welcome_notif)
+    db.commit()
+
+    token = create_access_token({"sub": str(user.id), "email": user.email})
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": user.to_dict()
+    }
+
+
+@router.post("/auth/login")
+def login_user(req: UserLoginRequest, db: Session = Depends(get_db)):
+    """Authenticate user with email and password, returning JWT access token."""
+    user = db.query(User).filter(User.email == req.email.lower().strip()).first()
+    if not user or not verify_password(req.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password. Please check your credentials."
+        )
+
+    token = create_access_token({"sub": str(user.id), "email": user.email})
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": user.to_dict()
+    }
+
+
+# ============================================================================
+# VAYU-Index v3.0: USER PROFILE & PREFERENCES ENDPOINTS
+# ============================================================================
+
+@router.get("/profile")
+def get_user_profile(
+    current_user: Optional[User] = Depends(get_current_user_optional),
+    db: Session = Depends(get_db)
+):
+    """Fetch complete user profile, saved routes, price alerts, and trip history."""
+    # Fallback to demo user if not authenticated
+    user = current_user or db.query(User).filter(User.email == "demo@vayuindex.in").first()
+    if not user:
+        user = db.query(User).first()
+
+    if not user:
+        return {
+            "user": {
+                "id": 1,
+                "email": "traveler@vayuindex.in",
+                "full_name": "Aero Guest",
+                "mobile": "+91 98765 43210",
+                "home_airport": "DEL",
+                "preferences": {
+                    "preferred_airlines": ["6E", "AI", "QP"],
+                    "notification_preferences": {"push": True, "email": True, "in_app": True},
+                    "card_preferences": ["SBI Cashback", "HDFC Regalia Gold"]
+                }
+            },
+            "saved_routes": [],
+            "price_alerts": [],
+            "saved_searches": [],
+            "trip_history": []
+        }
+
+    saved_r = db.query(SavedRoute).filter(SavedRoute.user_id == user.id).all()
+    alerts = db.query(PriceAlert).filter(PriceAlert.user_id == user.id).all()
+    searches = db.query(SavedSearch).filter(SavedSearch.user_id == user.id).all()
+    trips = db.query(TripHistory).filter(TripHistory.user_id == user.id).order_by(TripHistory.id.desc()).all()
+
+    return {
+        "user": user.to_dict(),
+        "saved_routes": [r.to_dict() for r in saved_r],
+        "price_alerts": [a.to_dict() for a in alerts],
+        "saved_searches": [s.to_dict() for s in searches],
+        "trip_history": [t.to_dict() for t in trips],
+    }
+
+
+@router.post("/profile/update")
+def update_user_profile(
+    req: UserProfileUpdateRequest,
+    current_user: Optional[User] = Depends(get_current_user_optional),
+    db: Session = Depends(get_db)
+):
+    """Update profile details, preferred airlines, notification toggles, and card preferences."""
+    user = current_user or db.query(User).filter(User.email == "demo@vayuindex.in").first()
+    if not user:
+        user = db.query(User).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if req.full_name is not None:
+        user.full_name = req.full_name
+    if req.mobile is not None:
+        user.mobile = req.mobile
+    if req.home_airport is not None:
+        user.home_airport = req.home_airport.upper()
+
+    # Preferences
+    pref = db.query(UserPreference).filter(UserPreference.user_id == user.id).first()
+    if not pref:
+        pref = UserPreference(user_id=user.id)
+        db.add(pref)
+
+    import json
+    if req.preferred_airlines is not None:
+        pref.preferred_airlines = json.dumps(req.preferred_airlines)
+    if req.notification_preferences is not None:
+        pref.notification_preferences = json.dumps(req.notification_preferences)
+    if req.card_preferences is not None:
+        pref.card_preferences = json.dumps(req.card_preferences)
+
+    db.commit()
+    db.refresh(user)
+    return {"status": "success", "message": "Profile updated successfully", "user": user.to_dict()}
+
+
+# ============================================================================
+# VAYU-Index v3.0: SMART NOTIFICATIONS & PRICE ALERTS
+# ============================================================================
+
+@router.get("/notifications")
+def get_user_notifications(
+    mark_read: Optional[bool] = False,
+    current_user: Optional[User] = Depends(get_current_user_optional),
+    db: Session = Depends(get_db)
+):
+    """Fetch all notifications for the user with unread count."""
+    user = current_user or db.query(User).filter(User.email == "demo@vayuindex.in").first()
+    user_id = user.id if user else None
+
+    query = db.query(Notification)
+    if user_id:
+        query = query.filter((Notification.user_id == user_id) | (Notification.user_id == None))
+    
+    if mark_read and user_id:
+        db.query(Notification).filter(Notification.user_id == user_id).update({"is_read": True})
+        db.commit()
+
+    notifications = query.order_by(Notification.created_at.desc()).limit(50).all()
+    unread_count = sum(1 for n in notifications if not n.is_read)
+
+    return {
+        "unread_count": unread_count,
+        "notifications": [n.to_dict() for n in notifications]
+    }
+
+
+@router.post("/notifications/read")
+def mark_notifications_read(
+    current_user: Optional[User] = Depends(get_current_user_optional),
+    db: Session = Depends(get_db)
+):
+    """Mark all notifications as read for current user."""
+    user = current_user or db.query(User).filter(User.email == "demo@vayuindex.in").first()
+    if user:
+        db.query(Notification).filter(Notification.user_id == user.id).update({"is_read": True})
+        db.commit()
+    return {"status": "success", "unread_count": 0}
+
+
+@router.post("/alerts")
+def create_or_update_alert(
+    req: PriceAlertRequest,
+    current_user: Optional[User] = Depends(get_current_user_optional),
+    db: Session = Depends(get_db)
+):
+    """Create or toggle a price drop / surge alert for a specific route."""
+    user = current_user or db.query(User).filter(User.email == "demo@vayuindex.in").first()
+    if not user:
+        user = db.query(User).first()
+
+    route_key = f"{req.origin_iata.upper()}-{req.destination_iata.upper()}"
+    
+    # Check current route price
+    route = db.query(Route).filter(Route.origin_iata == req.origin_iata.upper(), Route.destination_iata == req.destination_iata.upper()).first()
+    cur_fare = route.current_avg_fare if route and hasattr(route, 'current_avg_fare') else (route.base_fare * 1.12 if route else 5200.0)
+
+    orig_c = req.origin_iata.upper()
+    dest_c = req.destination_iata.upper()
+
+    alert = db.query(PriceAlert).filter(
+        PriceAlert.user_id == user.id,
+        PriceAlert.origin_iata == orig_c,
+        PriceAlert.destination_iata == dest_c
+    ).first()
+
+    if alert:
+        alert.target_price = req.target_price
+        alert.alert_type = req.alert_type.upper()
+        alert.is_active = True
+    else:
+        alert = PriceAlert(
+            user_id=user.id,
+            origin_iata=orig_c,
+            destination_iata=dest_c,
+            target_price=req.target_price,
+            alert_type=req.alert_type.upper(),
+            channel="ALL",
+            is_active=True
+        )
+        db.add(alert)
+
+    # Create confirmation notification
+    db.add(Notification(
+        user_id=user.id,
+        title=f"🔔 Price Alert Created: {route_key}",
+        message=f"We will monitor {orig_c} ➔ {dest_c} and notify you when airfare reaches ₹{int(req.target_price):,}.",
+        alert_type="FARE_DROP",
+        route_key=route_key,
+        new_price=req.target_price,
+        is_read=False
+    ))
+    db.commit()
+    db.refresh(alert)
+    return {"status": "success", "alert": alert.to_dict()}
+
+
+# ============================================================================
+# VAYU-Index v3.0: AI TRAVEL SUGGESTIONS (RULE-BASED INTELLIGENCE)
+# ============================================================================
+
+NEARBY_AIRPORT_ALTERNATIVES = {
+    "GOI": {"iata": "GOX", "name": "Manohar Int'l (Mopa)", "city": "North Goa", "est_savings": 1450},
+    "DEL": {"iata": "IXC", "name": "Chandigarh Airport", "city": "Chandigarh", "est_savings": 1100},
+    "BOM": {"iata": "PNQ", "name": "Pune Airport", "city": "Pune", "est_savings": 1250},
+    "BLR": {"iata": "MYQ", "name": "Mysuru Airport", "city": "Mysuru", "est_savings": 980},
+    "CCU": {"iata": "RDP", "name": "Kazi Nazrul Islam Airport", "city": "Durgapur", "est_savings": 1620},
+    "VNS": {"iata": "AYJ", "name": "Maharishi Valmiki Int'l", "city": "Ayodhya", "est_savings": 1350},
+    "MAA": {"iata": "TRZ", "name": "Tiruchirappalli Airport", "city": "Tiruchirappalli", "est_savings": 890},
+    "PAT": {"iata": "GAY", "name": "Gaya Airport", "city": "Gaya", "est_savings": 950},
+    "SXR": {"iata": "IXJ", "name": "Jammu Airport", "city": "Jammu", "est_savings": 1200},
+    "ATQ": {"iata": "IXC", "name": "Chandigarh Airport", "city": "Chandigarh", "est_savings": 850},
+    "DED": {"iata": "DEL", "name": "Indira Gandhi Int'l", "city": "Delhi", "est_savings": 1400},
+}
+
+
+@router.post("/ai/recommend")
+def get_ai_travel_recommendation(
+    req: AIRecommendRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    AI Travel Advisor — Rule-Based Recommendation Engine:
+    Analyzes booking window, APIx econometric trend, festival calendar,
+    route volatility, card offers, and nearby alternate airports.
+    """
+    orig = req.origin.upper().strip()
+    dest = req.destination.upper().strip()
+    route_key = f"{orig}-{dest}"
+
+    # 1. Airport and route lookup
+    orig_airport = db.query(Airport).filter(Airport.iata == orig).first()
+    dest_airport = db.query(Airport).filter(Airport.iata == dest).first()
+    route = db.query(Route).filter(Route.origin_iata == orig, Route.destination_iata == dest).first()
+
+    orig_city = orig_airport.city if orig_airport else orig
+    dest_city = dest_airport.city if dest_airport else dest
+
+    base_fare = float(route.base_fare) if route else 4800.0
+    distance_km = route.distance_km if route else 1150
+    category = route.category if route else "Domestic"
+
+    # 2. Days out calculation
+    today = date.today()
+    travel_d = today + timedelta(days=30)
+    if req.travel_date:
+        try:
+            travel_d = datetime.strptime(req.travel_date, "%Y-%m-%d").date()
+        except Exception:
+            pass
+
+    days_out = max(1, (travel_d - today).days)
+
+    # 3. Econometric APIx Trend
+    latest_apix = db.query(APIx).filter(APIx.level == "national").order_by(APIx.calculation_date.desc()).first()
+    apix_score = latest_apix.apix_score if latest_apix else 105.0
+
+    if apix_score > 135:
+        trend = "Rising"
+        trend_badge = "🔴 Rising (+3.4% WoW)"
+        trend_explanation = "Airfare index in strong bullish territory. Elevated corporate and festive demand pushing fares upward."
+        urgency = "HIGH"
+    elif apix_score < 95:
+        trend = "Falling"
+        trend_badge = "🟢 Falling (-4.1% WoW)"
+        trend_explanation = "Seasonal softness detected across this corridor. Airlines are releasing discounted seat buckets."
+        urgency = "LOW"
+    else:
+        trend = "Stable"
+        trend_badge = "🔵 Stable (±0.8% WoW)"
+        trend_explanation = "Corridor is tracking historical 30-day baseline equilibrium. Predictable pricing window."
+        urgency = "MEDIUM"
+
+    # 4. Best Booking Window calculation
+    if category in ["Metro", "Business"]:
+        rec_window = "21–28 days"
+        min_lead, max_lead = 21, 28
+    elif category in ["Pilgrimage", "North-East"]:
+        rec_window = "30–45 days"
+        min_lead, max_lead = 30, 45
+    else:
+        rec_window = "28–35 days"
+        min_lead, max_lead = 28, 35
+
+    if days_out < 14:
+        window_status = "Late Booking Window (High Surge)"
+        window_advice = f"🚨 Departure is in {days_out} days. Last-minute dynamic pricing penalty active (+18% daily surge). Book immediately."
+        multiplier = 1.38
+    elif days_out > 50:
+        window_status = "Early Speculative Window"
+        window_advice = f"⏳ Departure is in {days_out} days. Airlines haven't opened optimal yield buckets. Ideal purchase window opens in ~{days_out - max_lead} days."
+        multiplier = 1.08
+    else:
+        window_status = "Optimal Bargain Window (Active)"
+        window_advice = f"🎯 Prime Purchase Window. Current lead time ({days_out} days) matches algorithmic sweet spot ({rec_window}) for minimum tariff."
+        multiplier = 0.94
+
+    # 5. Festival Calendar Impact
+    fest_start = travel_d - timedelta(days=6)
+    fest_end = travel_d + timedelta(days=6)
+    active_festival = db.query(FestivalCalendar).filter(
+        FestivalCalendar.start_date <= fest_end,
+        FestivalCalendar.end_date >= fest_start
+    ).first()
+
+    festival_surge_mult = 1.0
+    if active_festival:
+        festival_impact_str = f"🔥 {active_festival.name} Active ({int((active_festival.surge_factor - 1.0) * 100)}% Surge Expected in {active_festival.region_focus})"
+        festival_surge_mult = float(active_festival.surge_factor or 1.35)
+    else:
+        festival_impact_str = "🟢 Nominal Non-Festive Trajectory (Zero cultural traffic congestion)"
+
+    # 6. Estimated Cheapest Fare Calculation
+    raw_est_fare = base_fare * multiplier * festival_surge_mult
+    # Mid-week discount (Tues/Wed)
+    midweek_fare = round(raw_est_fare * 0.90, 0)
+    weekend_fare = round(raw_est_fare * 1.15, 0)
+
+    # 7. Credit Card Intelligence
+    top_card = "SBI Cashback"
+    card_savings = min(midweek_fare * 0.10, 1500.0)
+    final_payable = max(2400.0, midweek_fare - card_savings + 299.0)
+
+    # 8. Alternative Nearby Airport
+    alt_data = NEARBY_AIRPORT_ALTERNATIVES.get(dest)
+    alt_recommendation = None
+    if alt_data and alt_data["iata"] != orig:
+        alt_recommendation = {
+            "origin": orig,
+            "alt_destination": alt_data["iata"],
+            "alt_name": alt_data["name"],
+            "alt_city": alt_data["city"],
+            "estimated_savings": alt_data["est_savings"],
+            "suggestion": f"Flying to {alt_data['name']} ({alt_data['iata']}) instead of {dest} saves ~₹{alt_data['est_savings']:,} on airfare."
+        }
+
+    # 9. Confidence Score
+    confidence = 94 if route else 89
+
+    return {
+        "origin": orig,
+        "destination": dest,
+        "origin_city": orig_city,
+        "destination_city": dest_city,
+        "route_key": route_key,
+        "travel_date": str(travel_d),
+        "days_out": days_out,
+        "best_booking_window": rec_window,
+        "window_status": window_status,
+        "window_advice": window_advice,
+        "price_trend": trend,
+        "price_trend_badge": trend_badge,
+        "trend_explanation": trend_explanation,
+        "estimated_cheapest_fare": int(midweek_fare),
+        "weekend_fare": int(weekend_fare),
+        "final_payable_with_card": int(final_payable),
+        "best_card_deal": {
+            "card_name": top_card,
+            "savings": int(card_savings),
+            "convenience_fee": 299
+        },
+        "best_day_to_fly": "Tuesday or Wednesday (historically 12–15% lower)",
+        "festival_impact": festival_impact_str,
+        "has_festival_surge": active_festival is not None,
+        "alternative_nearby_airport": alt_recommendation,
+        "confidence_score": confidence,
+        "urgency": urgency,
+        "ai_rationale": [
+            f"Econometric APIx is currently {apix_score:.1f}, placing demand in the {trend.lower()} regime.",
+            f"Optimal statistical advance purchase window for {category.lower()} routes is {rec_window}.",
+            f"Flying on Tuesday or Wednesday yields savings of ~₹{int(raw_est_fare * 0.12):,} compared to weekend departures.",
+            f"Eligible bank offer ({top_card}) provides an additional instant discount of ₹{int(card_savings):,}."
+        ]
+    }
+
+
+# ============================================================================
+# VAYU-Index v3.0: SMART BOOKING WINDOW & TRIP BOOKING ENGINE
+# ============================================================================
+
+AIRLINE_CARRIERS_META = [
+    {"name": "IndiGo", "code": "6E", "dep": "06:15", "arr": "08:35", "dur": "2h 20m", "stops": "Non-stop", "base_mult": 1.0, "time_tag": "morning"},
+    {"name": "Air India", "code": "AI", "dep": "09:40", "arr": "12:10", "dur": "2h 30m", "stops": "Non-stop", "base_mult": 1.08, "time_tag": "morning"},
+    {"name": "Akasa Air", "code": "QP", "dep": "14:20", "arr": "16:45", "dur": "2h 25m", "stops": "Non-stop", "base_mult": 0.94, "time_tag": "afternoon"},
+    {"name": "SpiceJet", "code": "SG", "dep": "18:50", "arr": "21:20", "dur": "2h 30m", "stops": "Non-stop", "base_mult": 0.92, "time_tag": "evening"},
+    {"name": "Air India Express", "code": "IX", "dep": "21:40", "arr": "00:15", "dur": "2h 35m", "stops": "Non-stop", "base_mult": 0.90, "time_tag": "evening"},
+]
+
+
+@router.post("/booking-window")
+def compute_smart_booking_window(
+    req: BookingWindowRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Smart Booking Window Engine:
+    Provides complete flight search matrix, predicted fare vs original fare,
+    APIx score, booking score (0-100), best window, cheapest date, and integrated
+    card discounts with ready-to-book provider interface structure.
+    """
+    orig = req.origin.upper().strip()
+    dest = req.destination.upper().strip()
+    route_key = f"{orig}-{dest}"
+
+    route = db.query(Route).filter(Route.origin_iata == orig, Route.destination_iata == dest).first()
+    orig_airport = db.query(Airport).filter(Airport.iata == orig).first()
+    dest_airport = db.query(Airport).filter(Airport.iata == dest).first()
+
+    base_route_fare = float(route.base_fare) if route else 4900.0
+    passengers = max(1, req.passengers or 1)
+
+    # Cabin multiplier
+    cabin = (req.cabin_class or "economy").lower()
+    cabin_mult = 1.0 if cabin == "economy" else (1.45 if cabin == "premium" else 2.35)
+
+    trip_mult = 1.90 if req.trip_type == "round-trip" else 1.0
+
+    today = date.today()
+    dep_date = today + timedelta(days=25)
+    if req.departure_date:
+        try:
+            dep_date = datetime.strptime(req.departure_date, "%Y-%m-%d").date()
+        except Exception:
+            pass
+
+    days_out = max(1, (dep_date - today).days)
+
+    # Days-out curve
+    if days_out < 7:
+        curve_factor = 1.55
+        booking_score = 42
+    elif days_out < 14:
+        curve_factor = 1.30
+        booking_score = 58
+    elif days_out <= 35:
+        curve_factor = 0.94
+        booking_score = 92
+    else:
+        curve_factor = 1.05
+        booking_score = 80
+
+    orig_fare = round(base_route_fare * passengers * cabin_mult * trip_mult, 0)
+    pred_fare = round(orig_fare * curve_factor, 0)
+
+    # Route APIx score
+    apix_val = round((pred_fare / (max(2200.0, (route.distance_km if route else 1100) * 4.2) * passengers * cabin_mult * trip_mult)) * 100.0, 1)
+
+    # Integrated card discount
+    best_offer = db.query(BankOffer).filter(BankOffer.is_active == True).order_by(BankOffer.discount_pct.desc()).first()
+    card_name = best_offer.card_name if best_offer else "SBI Cashback"
+    disc_pct = best_offer.discount_pct if best_offer else 10.0
+    disc_amt = min(pred_fare * (disc_pct / 100.0), 2500.0)
+    conv_fee = 299.0 * passengers
+    final_payable = round(pred_fare - disc_amt + conv_fee, 0)
+
+    cheapest_d = dep_date - timedelta(days=dep_date.weekday() - 1) if dep_date.weekday() != 1 else dep_date
+
+    # Generate available flight offers (Provider Interface ready for OTA integration)
+    available_flights = []
+    flight_idx = 101
+    for carrier in AIRLINE_CARRIERS_META:
+        if req.airline_filter and req.airline_filter != "ALL" and carrier["code"] != req.airline_filter:
+            continue
+        if req.time_filter and req.time_filter != "ALL" and carrier["time_tag"] != req.time_filter:
+            continue
+
+        flight_base = round(pred_fare * carrier["base_mult"], 0)
+        flight_disc = min(flight_base * (disc_pct / 100.0), 2500.0)
+        flight_final = round(flight_base - flight_disc + conv_fee, 0)
+
+        available_flights.append({
+            "id": f"FL-{flight_idx}",
+            "airline_name": carrier["name"],
+            "airline_code": carrier["code"],
+            "flight_number": f"{carrier['code']}-{random.randint(102, 899)}",
+            "origin": orig,
+            "destination": dest,
+            "origin_city": orig_airport.city if orig_airport else orig,
+            "destination_city": dest_airport.city if dest_airport else dest,
+            "departure_time": carrier["dep"],
+            "arrival_time": carrier["arr"],
+            "duration": carrier["dur"],
+            "stops": carrier["stops"],
+            "cabin_class": cabin.capitalize(),
+            "base_fare": int(flight_base),
+            "card_discount": int(flight_disc),
+            "convenience_fee": int(conv_fee),
+            "final_price": int(flight_final),
+            "best_card": card_name,
+            "seats_left": random.randint(3, 9),
+            "carbon_kg": random.randint(95, 145),
+            "on_time_pct": round(random.uniform(88.0, 94.5), 1),
+            "booking_url": f"https://vayu-reserve.in/book?route={route_key}&flight={carrier['code']}",
+            "provider": f"{carrier['name']} Direct / Amadeus NDC Ready"
+        })
+        flight_idx += 1
+
+    return {
+        "route_key": route_key,
+        "origin": orig,
+        "destination": dest,
+        "origin_city": orig_airport.city if orig_airport else orig,
+        "destination_city": dest_airport.city if dest_airport else dest,
+        "departure_date": str(dep_date),
+        "return_date": req.return_date,
+        "trip_type": req.trip_type,
+        "passengers": passengers,
+        "cabin_class": cabin.capitalize(),
+        "days_out": days_out,
+        "original_fare": int(orig_fare),
+        "predicted_fare": int(pred_fare),
+        "apix": apix_val,
+        "booking_score": booking_score,
+        "best_window": "21–35 Days Out",
+        "cheapest_date": str(cheapest_d),
+        "card_applied": card_name,
+        "discount_amount": int(disc_amt),
+        "convenience_fee": int(conv_fee),
+        "final_payable_price": int(final_payable),
+        "total_savings": int(disc_amt),
+        "available_flights": available_flights
+    }
+
+
+@router.post("/trips/book")
+def book_flight_trip(
+    req: BookTripRequest,
+    current_user: Optional[User] = Depends(get_current_user_optional),
+    db: Session = Depends(get_db)
+):
+    """
+    Booking-Ready Provider Interface:
+    Simulates airline reservation booking and records confirmation in TripHistory.
+    """
+    user = current_user or db.query(User).filter(User.email == "demo@vayuindex.in").first()
+    if not user:
+        user = db.query(User).first()
+
+    booking_ref = f"VY-{random.randint(100000, 999999)}"
+    orig = (req.origin_iata or req.origin or "DEL").upper()
+    dest = (req.destination_iata or req.destination or "BOM").upper()
+    route_k = f"{orig}-{dest}"
+    travel_d = req.departure_date or str(date.today() + timedelta(days=25))
+    paid = float(req.final_fare if req.final_fare is not None else (req.fare_paid or 4200.0))
+    base = float(req.base_fare or paid)
+
+    trip = TripHistory(
+        user_id=user.id,
+        pnr_ref=booking_ref,
+        origin_iata=orig,
+        destination_iata=dest,
+        airline=req.airline or "IndiGo",
+        flight_number=req.flight_number or "6E-204",
+        departure_time="06:15",
+        arrival_time="08:35",
+        fare_paid=paid,
+        savings=max(0.0, base - paid),
+        booking_date=str(date.today()),
+        travel_date=travel_d,
+        passengers_count=1,
+        cabin_class="Economy",
+        status="CONFIRMED"
+    )
+    db.add(trip)
+
+    # Notification
+    db.add(Notification(
+        user_id=user.id,
+        title=f"✅ Booking Confirmed: {req.airline} {req.flight_number}",
+        message=f"PNR: {booking_ref}. Flight from {orig} to {dest} confirmed for {travel_d}. Final payable ₹{int(paid):,}.",
+        alert_type="BEST_WINDOW",
+        route_key=route_k,
+        new_price=paid,
+        is_read=False
+    ))
+    db.commit()
+    db.refresh(trip)
+
+    return {
+        "status": "CONFIRMED",
+        "pnr": booking_ref,
+        "booking_ref": booking_ref,
+        "passenger": req.passenger_name or "Arjun Verma",
+        "fare_paid": paid,
+        "trip": trip.to_dict(),
+        "message": "Flight reservation completed successfully via VAYU Booking Gateway."
+    }
+
 

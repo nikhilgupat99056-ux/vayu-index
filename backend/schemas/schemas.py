@@ -152,3 +152,75 @@ class FareSaverRequest(BaseModel):
     sort_by: Optional[str] = "savings_desc"  # savings_desc, final_price_asc, final_price_desc, discount_desc
     limit: Optional[int] = 350
     offset: Optional[int] = 0
+
+
+# ============================================================================
+# VAYU-Index v3.0 Request & Response Schemas
+# ============================================================================
+
+class UserRegisterRequest(BaseModel):
+    email: str
+    password: str
+    full_name: Optional[str] = "VAYU Traveler"
+    mobile: Optional[str] = None
+    home_airport: Optional[str] = "DEL"
+
+
+class UserLoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class UserProfileUpdateRequest(BaseModel):
+    full_name: Optional[str] = None
+    mobile: Optional[str] = None
+    home_airport: Optional[str] = None
+    preferred_airlines: Optional[List[str]] = None
+    notification_preferences: Optional[dict] = None
+    card_preferences: Optional[List[str]] = None
+
+
+class PriceAlertRequest(BaseModel):
+    origin_iata: str
+    destination_iata: str
+    target_price: float
+    alert_type: Optional[str] = "fare_drop"  # fare_drop, fare_surge, window, festival
+
+
+class AIRecommendRequest(BaseModel):
+    origin: str
+    destination: str
+    travel_date: Optional[str] = None
+    flexible_dates: Optional[bool] = True
+    budget: Optional[float] = None
+    preferred_airline: Optional[str] = None
+
+
+class BookingWindowRequest(BaseModel):
+    origin: str
+    destination: str
+    departure_date: Optional[str] = None
+    return_date: Optional[str] = None
+    trip_type: Optional[str] = "one-way"  # "one-way" or "round-trip"
+    passengers: Optional[int] = 1
+    cabin_class: Optional[str] = "economy"  # "economy", "premium", "business"
+    airline_filter: Optional[str] = "ALL"
+    stops_filter: Optional[str] = "ALL"  # "ALL", "non-stop", "1-stop"
+    time_filter: Optional[str] = "ALL"  # "ALL", "morning", "afternoon", "evening"
+
+
+class BookTripRequest(BaseModel):
+    origin_iata: Optional[str] = None
+    origin: Optional[str] = None
+    destination_iata: Optional[str] = None
+    destination: Optional[str] = None
+    departure_date: Optional[str] = None
+    return_date: Optional[str] = None
+    airline: Optional[str] = "IndiGo"
+    flight_number: Optional[str] = "6E-204"
+    passenger_name: Optional[str] = "Arjun Verma"
+    base_fare: Optional[float] = 4500.0
+    final_fare: Optional[float] = None
+    fare_paid: Optional[float] = 4200.0
+
+

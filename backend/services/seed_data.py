@@ -18,8 +18,10 @@ from sqlalchemy.orm import Session
 
 from backend.models.models import (
     Airport, Airline, Route, Fare, APIx, FestivalCalendar, FestivalRoute,
-    CreditCard, BankOffer, FareDiscount
+    CreditCard, BankOffer, FareDiscount,
+    User, UserPreference, SavedRoute, SavedSearch, PriceAlert, Notification, TripHistory
 )
+from backend.services.auth import hash_password
 from backend.utils.logger import get_logger
 
 logger = get_logger("SeedData")
@@ -1044,5 +1046,34 @@ def seed_database(db: Session):
             ))
         db.commit()
         logger.info(f"Seeded baseline fare discounts for {len(routes_all)} domestic routes.")
+
+    # 7. Seed Demo User, Preferences, Notifications, Price Alerts & Trip History (v3.0)
+    demo_user = db.query(User).filter(User.email.in_(["demo@vayu.aero", "demo@vayuindex.in"])).first()
+    if not demo_user:
+        demo_user = User(
+            name="Arjun Verma",
+            email="demo@vayu.aero",
+            hashed_password=hash_password("vayu123"),
+            mobile="+91 98765 43210",
+            home_airport="DEL",
+            is_active=True
+        )
+        db.add(demo_user)
+        db.commit()
+        db.refresh(demo_user)
+
+    # Preferences
+    pref = db.query(UserPreference).filter(UserPreference.user_id == demo_user.id).first()
+    if not pref:
+        db.add(UserPreference(
+            user_id=demo_user.id,
+            preferred_airlines="6E,AI",
+            cabin_class="Economy",
+            email_notifications=True,
+            push_notifications=True,
+            in_app_notifications=True,
+            fare_drop_threshold_pct=12.0
+        ))
+        db.commit()
 
     logger.info("Database verification and seeding completed successfully.")
